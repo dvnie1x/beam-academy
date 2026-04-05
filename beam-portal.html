@@ -54,7 +54,7 @@ nav.scrolled {
   border-bottom: 1px solid var(--border);
 }
 .nav-brand {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 4px;
   text-decoration: none; color: var(--text);
   font-family: var(--font-head); font-weight: 700; font-size: 1rem;
 }
@@ -66,8 +66,9 @@ nav.scrolled {
   font-family: var(--font-head); flex-shrink: 0;
 }
 .beam-star-logo {
-  width: 28px; height: 28px; object-fit: contain;
-  background: white; border-radius: 6px; padding: 3px; flex-shrink: 0;
+  width: 40px; height: 40px; object-fit: contain;
+  flex-shrink: 0;
+  margin-right: -6px;
 }
 .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
 .nav-links a {
@@ -565,7 +566,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
 }
 .footer-brand { display: flex; flex-direction: column; gap: 12px; }
 .footer-logo {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 4px;
   font-family: var(--font-head); font-weight: 700; font-size: .95rem;
   color: white; text-decoration: none;
 }
@@ -619,7 +620,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
 <!-- NAV -->
 <nav>
   <a href="index.html" class="nav-brand">
-    <img src="https://beamacademy.info/logo-star.png" class="beam-star-logo" alt="BEAM"
+    <img src="images/logo.png" class="beam-star-logo" alt="BEAM"
       onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
     <div class="beam-icon" style="display:none">B</div>
     BEAM Academy
@@ -712,7 +713,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
                 <div class="bm-chip">↑ 89% this week</div>
               </div>
               <div class="bm-chart-card">
-                <div class="bm-chart-card-title">Your Progress — Weeks 1–8</div>
+                <div class="bm-chart-card-title">Your Progress · Weeks 1–8</div>
                 <div class="bm-chart-layout">
                   <!-- Y labels as HTML — never stretches -->
                   <div class="chart-ylabels">
@@ -774,12 +775,12 @@ footer { background: #1E1035; padding: 64px 48px 0; }
               <!-- All worksheets (visible by default) -->
               <div class="bm-ws-row" id="ws-row-0">
                 <div class="bm-ws-icon"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--p)" stroke-width="1.5"><rect x="2" y="1" width="12" height="14" rx="1.5"/><path d="M5 5h6M5 7.5h6M5 10h4" stroke-linecap="round"/></svg></div>
-                <div><div class="bm-ws-name">Calculus — Integration by Parts</div><div class="bm-ws-sub">Maths Ext1 · Week 6 · 12 questions</div></div>
+                <div><div class="bm-ws-name">Calculus: Integration by Parts</div><div class="bm-ws-sub">Maths Ext1 · Week 6 · 12 questions</div></div>
                 <div class="bm-ws-dl">↓</div>
               </div>
               <div class="bm-ws-row" id="ws-row-1">
                 <div class="bm-ws-icon"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--p)" stroke-width="1.5"><rect x="2" y="1" width="12" height="14" rx="1.5"/><path d="M5 5h6M5 7.5h6M5 10h4" stroke-linecap="round"/></svg></div>
-                <div><div class="bm-ws-name">Module B — Essay Technique</div><div class="bm-ws-sub">English Adv · Week 5 · 3 tasks</div></div>
+                <div><div class="bm-ws-name">Module B: Essay Technique</div><div class="bm-ws-sub">English Adv · Week 5 · 3 tasks</div></div>
                 <div class="bm-ws-dl">↓</div>
               </div>
               <div class="bm-ws-row" id="ws-row-2">
@@ -790,7 +791,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
               <!-- Trigonometry worksheet — shown only after search -->
               <div class="bm-ws-row ws-tag-trig hidden" id="ws-row-trig">
                 <div class="bm-ws-icon ws-tag-trig"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--p)" stroke-width="1.5"><rect x="2" y="1" width="12" height="14" rx="1.5"/><path d="M5 5h6M5 7.5h6M5 10h4" stroke-linecap="round"/></svg></div>
-                <div><div class="bm-ws-name">Trigonometry — Identities &amp; Graphs</div><div class="bm-ws-sub">Maths Adv · Week 4 · 10 questions</div></div>
+                <div><div class="bm-ws-name">Trigonometry: Identities &amp; Graphs</div><div class="bm-ws-sub">Maths Adv · Week 4 · 10 questions</div></div>
                 <div class="bm-ws-dl">↓</div>
               </div>
             </div>
@@ -866,7 +867,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
               </div>
               <div class="bm-ws-generated">
                 <div style="font-size:.95rem">📄</div>
-                <div class="bm-ws-gen-text">Custom Worksheet Generated — Statistics (weak area)</div>
+                <div class="bm-ws-gen-text">Custom Worksheet Generated · Statistics</div>
                 <button class="bm-ws-gen-btn">Download</button>
               </div>
             </div>
@@ -893,7 +894,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
         <span class="sc-pin-tag">Live Progress Tracking</span>
         <div class="sc-pin-title">Every topic, every week.</div>
         <div class="sc-pin-desc">Not a vague "doing well". An exact score per topic updated after every session.</div>
-        <div class="sc-pin-stat">89% ↑ personal best — Week 8</div>
+        <div class="sc-pin-stat">89% ↑ personal best · Week 8</div>
       </div>
     </div>
 
@@ -903,7 +904,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
         <span class="sc-pin-icon">👋</span>
         <span class="sc-pin-tag">Your Dashboard</span>
         <div class="sc-pin-title">Personalised from day one.</div>
-        <div class="sc-pin-desc">Your name, your subjects, your upcoming sessions — all at a glance the moment you log in.</div>
+        <div class="sc-pin-desc">Your name, your subjects, your upcoming sessions. All at a glance the moment you log in.</div>
       </div>
     </div>
 
@@ -913,7 +914,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
         <span class="sc-pin-icon">🗂️</span>
         <span class="sc-pin-tag">All In One Place</span>
         <div class="sc-pin-title">Six tools. One login.</div>
-        <div class="sc-pin-desc">Dashboard, Worksheets, Past Papers, Results, Homework, Q&amp;A and a Study Timer — all accessible from the sidebar.</div>
+        <div class="sc-pin-desc">Dashboard, Worksheets, Past Papers, Results, Homework, Q&amp;A and a Study Timer. All accessible from the sidebar.</div>
       </div>
     </div>
 
@@ -923,7 +924,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
         <span class="sc-pin-icon">📋</span>
         <span class="sc-pin-tag">Custom Worksheets</span>
         <div class="sc-pin-title">Built for you, not everyone.</div>
-        <div class="sc-pin-desc">Every worksheet is generated from your personal diagnostic data — the exact questions costing you marks.</div>
+        <div class="sc-pin-desc">Every worksheet is built from your personal diagnostic data, targeting the exact areas you need to work on.</div>
         <div class="sc-pin-stat">Answer key + worked solutions included</div>
       </div>
     </div>
@@ -934,7 +935,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
         <span class="sc-pin-icon">🔍</span>
         <span class="sc-pin-tag">Worksheet Search</span>
         <div class="sc-pin-title">Find anything instantly.</div>
-        <div class="sc-pin-desc">Search across all your worksheets by topic, subject, or week. The entire library — pulled up in a second.</div>
+        <div class="sc-pin-desc">Search across all your worksheets by topic, subject, or week. The entire library pulled up in a second.</div>
       </div>
     </div>
 
@@ -944,7 +945,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
         <span class="sc-pin-icon">⚡</span>
         <span class="sc-pin-tag">Instant Results</span>
         <div class="sc-pin-title">Your exact topic, right there.</div>
-        <div class="sc-pin-desc">Type "trigonometry" — every trig worksheet you've ever been assigned surfaces immediately, ready to download.</div>
+        <div class="sc-pin-desc">Type "trigonometry" and every trig worksheet you've ever been assigned surfaces immediately, ready to download.</div>
       </div>
     </div>
 
@@ -954,7 +955,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
         <span class="sc-pin-icon">📤</span>
         <span class="sc-pin-tag">Past Paper Marking</span>
         <div class="sc-pin-title">Upload tonight, results tomorrow.</div>
-        <div class="sc-pin-desc">Your tutor personally reviews every question — not automated, not AI. Real feedback by morning.</div>
+        <div class="sc-pin-desc">Your tutor personally reviews every question. Not automated, not AI. Real feedback by morning.</div>
         <div class="sc-pin-stat">&lt;24 hour guaranteed turnaround</div>
       </div>
     </div>
@@ -965,7 +966,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
         <span class="sc-pin-icon">📎</span>
         <span class="sc-pin-tag">Any Paper, Any Subject</span>
         <div class="sc-pin-title">Maths, English, Chemistry, Physics.</div>
-        <div class="sc-pin-desc">Upload a PDF scan — CamScanner works perfectly. Supports all HSC subjects covered by BEAM tutors.</div>
+        <div class="sc-pin-desc">Upload a PDF scan (CamScanner works perfectly). Supports all HSC subjects covered by BEAM tutors.</div>
       </div>
     </div>
 
@@ -1025,7 +1026,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
   <div class="footer-grid">
     <div class="footer-brand">
       <a href="index.html" class="footer-logo">
-        <img src="https://beamacademy.info/logo-star.png" class="beam-star-logo" alt="BEAM"
+        <img src="images/logo.png" class="beam-star-logo" alt="BEAM"
           style="background:rgba(255,255,255,.12)"
           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="beam-icon" style="display:none">B</div>
