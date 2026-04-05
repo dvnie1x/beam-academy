@@ -489,11 +489,38 @@
     opacity: .7;
   }
   .why-scroll-hint svg { opacity: .5; }
+  .why-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .why-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: white;
+    color: var(--p);
+    cursor: pointer;
+    transition: background .2s, border-color .2s, transform .15s, opacity .2s;
+    flex-shrink: 0;
+  }
+  .why-arrow:hover {
+    background: var(--p);
+    border-color: var(--p);
+    color: white;
+    transform: scale(1.08);
+  }
+  .why-arrow:active { transform: scale(0.95); }
+  .why-arrow:disabled { opacity: .3; cursor: default; pointer-events: none; }
   .why-dots {
     display: flex;
     gap: 8px;
     justify-content: center;
-    margin-top: 20px;
   }
   .why-dot {
     width: 8px; height: 8px;
@@ -1828,17 +1855,21 @@
           </div>
         </div>
       </div>
-      <div class="why-scroll-hint">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Drag to explore
-      </div>
-      <div class="why-dots" id="whyDots">
-        <div class="why-dot active"></div>
-        <div class="why-dot"></div>
-        <div class="why-dot"></div>
-        <div class="why-dot"></div>
-        <div class="why-dot"></div>
-        <div class="why-dot"></div>
+      <div class="why-nav">
+        <button class="why-arrow" id="whyPrev" aria-label="Previous">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 4L6 9l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="why-dots" id="whyDots">
+          <div class="why-dot active"></div>
+          <div class="why-dot"></div>
+          <div class="why-dot"></div>
+          <div class="why-dot"></div>
+          <div class="why-dot"></div>
+          <div class="why-dot"></div>
+        </div>
+        <button class="why-arrow" id="whyNext" aria-label="Next">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 4l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
       </div>
     </div>
   </div>
@@ -3343,7 +3374,12 @@
     if (step < TOTAL_STEPS) {
       goToStep(step + 1);
     } else {
-      const name = document.getElementById('f-name').value.trim();
+      const name     = document.getElementById('f-name').value.trim();
+      const year     = document.querySelector('#year-pills .sel-pill.selected')?.textContent || '';
+      const subjects = [...document.querySelectorAll('#subject-pills .sel-pill.selected')].map(p => p.textContent).join(', ') || 'None selected';
+      const email    = document.getElementById('f-email').value.trim();
+      const phone    = document.getElementById('f-phone').value.trim();
+
       document.getElementById('step6-msg').textContent = 'Talk to you soon about ' + name + "'s trial lesson.";
       goToStep(6);
       document.getElementById('form-progress').style.display = 'none';
@@ -3358,6 +3394,12 @@
           tick.style.strokeDashoffset = '0';
         }, 800);
       }, 450);
+
+      fetch('https://formspree.io/f/YOUR_FORM_ID', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ name, year, subjects, email, phone })
+      }).catch(() => {});
     }
   }
 
@@ -3407,28 +3449,48 @@
     const dots = dotsEl.querySelectorAll('.why-dot');
     const cards = track.querySelectorAll('.why-card');
     const CARD_COUNT = cards.length;
+    const prevBtn = document.getElementById('whyPrev');
+    const nextBtn = document.getElementById('whyNext');
+    let curIdx = 0;
+    let scrollTimer = null;
+    let programmatic = false;
 
-    // Update active dot based on scroll position
-    function updateDots() {
-      const scrollLeft = track.scrollLeft;
-      const maxScroll = track.scrollWidth - track.clientWidth;
-      const idx = Math.round((scrollLeft / (maxScroll || 1)) * (CARD_COUNT - 1));
-      dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    function setIdx(idx) {
+      curIdx = Math.max(0, Math.min(idx, CARD_COUNT - 1));
+      dots.forEach((d, i) => d.classList.toggle('active', i === curIdx));
+      if (prevBtn) prevBtn.disabled = curIdx <= 0;
+      if (nextBtn) nextBtn.disabled = curIdx >= CARD_COUNT - 1;
     }
-    track.addEventListener('scroll', updateDots, { passive: true });
 
-    // Click dot to scroll to card
-    dots.forEach((dot, i) => {
-      dot.addEventListener('click', () => {
-        const card = cards[i];
-        track.scrollTo({ left: card.offsetLeft - 4, behavior: 'smooth' });
-      });
-    });
+    function scrollToIdx(idx) {
+      setIdx(idx);
+      programmatic = true;
+      track.scrollTo({ left: cards[curIdx].offsetLeft - 4, behavior: 'smooth' });
+      // Re-enable scroll sync after animation settles
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => { programmatic = false; }, 600);
+    }
+
+    // Dots click
+    dots.forEach((dot, i) => dot.addEventListener('click', () => scrollToIdx(i)));
+
+    // Arrow buttons
+    if (prevBtn) prevBtn.addEventListener('click', () => scrollToIdx(curIdx - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => scrollToIdx(curIdx + 1));
+
+    // Sync curIdx when user drags/swipes (not during programmatic scroll)
+    track.addEventListener('scroll', () => {
+      if (programmatic) return;
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      const idx = Math.round((track.scrollLeft / (maxScroll || 1)) * (CARD_COUNT - 1));
+      setIdx(idx);
+    }, { passive: true });
 
     // Drag to scroll
     let isDown = false, startX, scrollAtStart;
     track.addEventListener('mousedown', e => {
       isDown = true;
+      programmatic = false;
       startX = e.pageX - track.offsetLeft;
       scrollAtStart = track.scrollLeft;
     });
@@ -3439,6 +3501,8 @@
       track.scrollLeft = scrollAtStart - (x - startX);
     });
     window.addEventListener('mouseup', () => { isDown = false; });
+
+    setIdx(0);
   })();
 
   // ═══ TRIAL PANEL ═══
@@ -3528,7 +3592,12 @@
     if (step < TP_TOTAL) {
       tpGoToStep(step + 1);
     } else {
-      const name = document.getElementById('tp-f-name').value.trim();
+      const name     = document.getElementById('tp-f-name').value.trim();
+      const year     = document.querySelector('#tp-year-pills .sel-pill.selected')?.textContent || '';
+      const subjects = [...document.querySelectorAll('#tp-subject-pills .sel-pill.selected')].map(p => p.textContent).join(', ') || 'None selected';
+      const email    = document.getElementById('tp-f-email').value.trim();
+      const phone    = document.getElementById('tp-f-phone').value.trim();
+
       document.getElementById('tp-step6-msg').textContent = 'Talk to you soon about ' + name + "'s trial lesson.";
       tpGoToStep(6);
       document.getElementById('tp-form-progress').style.display = 'none';
@@ -3543,6 +3612,13 @@
           tick.style.strokeDashoffset = '0';
         }, 800);
       }, 450);
+
+      // Send to Formspree — replace with your own endpoint
+      fetch('https://formspree.io/f/YOUR_FORM_ID', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ name, year, subjects, email, phone })
+      }).catch(() => {}); // fail silently — success screen already shown
     }
   }
 
@@ -3642,6 +3718,32 @@
         span.style.transition = 'transform .5s cubic-bezier(.34,1.56,.64,1)';
       });
     });
+
+    // ── Always-on wave animation ──
+    // A sine wave travels left-to-right across the letters.
+    // Only vertical movement so the order never looks scrambled.
+    // Pauses while mouse is hovering (the explode effect takes over).
+    let mouseOnWord = false;
+    let waveRaf = null;
+    const waveStart = performance.now();
+
+    word.addEventListener('mouseenter', () => { mouseOnWord = true; });
+    word.addEventListener('mouseleave', () => { mouseOnWord = false; });
+
+    function waveTick(now) {
+      if (!mouseOnWord) {
+        const t = (now - waveStart) * 0.0009; // speed
+        letters.forEach((span, i) => {
+          // Each letter is offset along the wave by its index
+          const phase = (i / letters.length) * Math.PI * 2;
+          const ty = Math.sin(t + phase) * 3; // max 3px up/down only
+          span.style.transform = `translateY(${ty}px)`;
+          span.style.transition = 'none';
+        });
+      }
+      waveRaf = requestAnimationFrame(waveTick);
+    }
+    waveRaf = requestAnimationFrame(waveTick);
   })();
 </script>
 </body>
