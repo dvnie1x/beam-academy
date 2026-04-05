@@ -125,6 +125,13 @@ nav.scrolled {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
   opacity: .5; pointer-events: none; z-index: 0;
 }
+/* Blend bottom edge into CTA — JS-controlled, only at end */
+#sc-fade-out {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 28%;
+  background: linear-gradient(to bottom, transparent, #4C1D95);
+  pointer-events: none; z-index: 10;
+  opacity: 0;
+}
 
 /* Ambient glow behind portal */
 .sc-glow {
@@ -539,14 +546,14 @@ nav.scrolled {
 
 /* ═══ CTA ═══ */
 #portal-cta {
-  background: linear-gradient(135deg, #4C1D95, #7C3AED, #9333EA);
+  background: linear-gradient(to bottom, #4C1D95 0%, #2D0A6E 50%, #1E1035 100%);
   padding: 120px 48px; text-align: center; position: relative; overflow: hidden;
 }
 #portal-cta::before {
   content: '';
-  position: absolute; width: 600px; height: 600px;
-  background: radial-gradient(ellipse, rgba(255,255,255,.1) 0%, transparent 70%);
-  top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none;
+  position: absolute; width: 700px; height: 500px;
+  background: radial-gradient(ellipse, rgba(124,58,237,.3) 0%, transparent 70%);
+  top: 40%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; z-index: 0;
 }
 #portal-cta .inner { position: relative; z-index: 1; }
 #portal-cta h2 {
@@ -639,6 +646,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
   <div class="showcase-sticky" id="showcaseSticky">
 
     <div class="sc-glow"></div>
+    <div id="sc-fade-out"></div>
 
     <!-- Title label (visible at start) -->
     <div class="sc-portal-title" id="scTitle">
@@ -1368,6 +1376,13 @@ function handleShowcase() {
   // Apply transform (direct — scroll is the animation driver)
   scMockWrap.style.transition = 'none';
   scMockWrap.style.transform  = `scale(${s.toFixed(4)}) translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%)`;
+
+  // Fade bottom edge only in last 12% of scroll
+  const fadeEl = document.getElementById('sc-fade-out');
+  if (fadeEl) {
+    const fadeOpacity = Math.max(0, Math.min(1, (p - 0.88) / 0.12));
+    fadeEl.style.opacity = fadeOpacity.toFixed(3);
+  }
 
   // Velocity-based motion blur
   const velocity = Math.abs(window.scrollY - prevScrollY);
