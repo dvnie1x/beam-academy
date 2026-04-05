@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BEAM Student Portal — Track Your HSC Progress</title>
+<meta name="description" content="The BEAM Academy student portal — live topic dashboards, custom worksheets, past paper marking, and private Discord support.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --p: #7C3AED;
+  --p2: #A855F7;
+  --p3: #C084FC;
+  --p-soft: #F3EEFF;
+  --p-mid: #EDE9F8;
+  --bg2: #F8F5FF;
+  --text: #1E1035;
+  --text2: #4B3F72;
+  --text3: #7C6FA0;
+  --border: #E2D9F3;
+  --font-head: 'Bricolage Grotesque', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: #FDFCFF;
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ═══ SCROLL PROGRESS ═══ */
+#scroll-progress {
+  position: fixed; left: 0; top: 0;
+  width: 2px; height: 0%;
+  background: linear-gradient(to bottom, var(--p), var(--p2));
+  z-index: 9999;
+}
+
+/* ═══ NAV ═══ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 0 48px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background .3s, border-color .3s;
+}
+nav.scrolled {
+  background: rgba(255,255,255,.93);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; color: var(--text);
+  font-family: var(--font-head); font-weight: 700; font-size: 1rem;
+}
+.beam-icon {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: linear-gradient(135deg,#7C3AED,#A855F7);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 800; font-size: .85rem;
+  font-family: var(--font-head); flex-shrink: 0;
+}
+.beam-star-logo {
+  width: 28px; height: 28px; object-fit: contain;
+  background: white; border-radius: 6px; padding: 3px; flex-shrink: 0;
+}
+.nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+.nav-links a {
+  color: var(--text2); text-decoration: none;
+  font-size: .85rem; font-weight: 500;
+  padding: 6px 12px; border-radius: 7px;
+  transition: color .2s, background .2s;
+}
+.nav-links a:hover { color: var(--p); background: var(--p-soft); }
+.nav-cta {
+  background: var(--p) !important; color: white !important;
+  padding: 8px 20px !important; border-radius: 8px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 14px rgba(124,58,237,.35);
+}
+
+/* ═══ BUTTONS ═══ */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px; border-radius: 10px;
+  font-family: var(--font-body); font-weight: 600; font-size: .95rem;
+  text-decoration: none; cursor: pointer; border: none;
+  transition: transform .2s, box-shadow .2s;
+}
+.btn-p { background: var(--p); color: white; box-shadow: 0 4px 18px rgba(124,58,237,.3); }
+.btn-p:hover { background: #6D28D9; transform: translateY(-2px); }
+.btn-wo { background: transparent; color: white; border: 1.5px solid rgba(255,255,255,.4); }
+.btn-wo:hover { border-color: white; background: rgba(255,255,255,.07); transform: translateY(-2px); }
+.btn-magnetic { display: inline-flex; }
+.section-tag {
+  display: inline-block; font-size: .75rem; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--p); background: var(--p-soft);
+  border: 1px solid var(--border);
+  padding: 5px 12px; border-radius: 100px; margin-bottom: 16px;
+}
+
+/* ═══════════════════════════════════════
+   SHOWCASE — MAIN SCROLL EXPERIENCE
+   Total: 1200vh, 12 keyframes at ~100vh each
+═══════════════════════════════════════ */
+#showcase { height: 1200vh; position: relative; }
+
+.showcase-sticky {
+  position: sticky; top: 0; height: 100vh;
+  background: linear-gradient(160deg, #3B0F8C 0%, #5B21B6 40%, #7C3AED 70%, #5B21B6 100%);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+/* Subtle noise texture */
+.showcase-sticky::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity: .5; pointer-events: none; z-index: 0;
+}
+
+/* Ambient glow behind portal */
+.sc-glow {
+  position: absolute;
+  width: 70vw; height: 70vh;
+  background: radial-gradient(ellipse, rgba(255,255,255,.1) 0%, transparent 65%);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  pointer-events: none; z-index: 0;
+  filter: blur(40px);
+}
+
+/* ═══ PORTAL TITLE (visible at start and end) ═══ */
+.sc-portal-title {
+  position: absolute;
+  top: 72px;
+  left: 50%; transform: translateX(-50%);
+  z-index: 20;
+  text-align: center;
+  pointer-events: none;
+  transition: opacity .6s ease;
+}
+.sc-portal-title .badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3);
+  color: rgba(255,255,255,.85); font-size: .73rem; font-weight: 600;
+  letter-spacing: .07em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px; margin-bottom: 12px;
+}
+.sc-portal-title .badge::before {
+  content: ''; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--p3);
+  animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.sc-portal-title h1 {
+  font-family: var(--font-head);
+  font-size: clamp(2.4rem, 4vw, 3.8rem);
+  font-weight: 800; letter-spacing: -.04em; line-height: 1;
+  background: linear-gradient(110deg, #E9D5FF 0%, #C084FC 50%, #A78BFA 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ═══ THE PORTAL MOCKUP ═══ */
+.sc-mockup-wrap {
+  position: absolute; z-index: 2;
+  will-change: transform, filter;
+  transform-origin: center center;
+  width: min(940px, 88vw);
+  /* Very short transform transition smooths scroll jitter without adding lag */
+  transition: filter 0.4s ease;
+}
+
+/* Browser chrome */
+.bmock {
+  background: white;
+  border-radius: 12px; overflow: hidden;
+  border: 1px solid rgba(255,255,255,.2);
+  box-shadow: 0 24px 80px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.12), 0 0 60px rgba(255,255,255,.08);
+}
+.bmock-chrome {
+  background: #F5F3FA;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  padding: 9px 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.bm-dots { display: flex; gap: 5px; }
+.bm-dot { width: 10px; height: 10px; border-radius: 50%; }
+.bm-dot-r { background: #FF5F57; }
+.bm-dot-y { background: #FEBC2E; }
+.bm-dot-g { background: #28C840; }
+.bm-nav-btn { font-size: .78rem; color: #9CA3AF; }
+.bm-url {
+  flex: 1; background: white;
+  border: 1px solid var(--border); border-radius: 5px;
+  padding: 3px 12px; font-size: .7rem;
+  color: var(--text3); text-align: center;
+  font-family: 'SF Mono','Fira Code',monospace;
+  transition: color .3s;
+}
+
+/* ═══ PORTAL BODY ═══ */
+.bmock-body { display: flex; height: 460px; }
+
+/* Sidebar */
+.bm-sidebar {
+  width: 154px; border-right: 1px solid var(--border);
+  background: white; flex-shrink: 0;
+}
+.bm-logo {
+  display: flex; align-items: center; gap: 7px;
+  padding: 11px 13px; border-bottom: 1px solid var(--border);
+}
+.bm-logo-b {
+  width: 20px; height: 20px; border-radius: 5px;
+  background: linear-gradient(135deg,var(--p),var(--p2));
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 800; font-size: .65rem; font-family: var(--font-head);
+}
+.bm-logo-text { font-size: .7rem; font-weight: 700; color: var(--text); }
+.bm-nav-item {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 13px; font-size: .72rem; color: var(--text3);
+  cursor: pointer; transition: color .15s, background .15s;
+}
+.bm-nav-item.active { color: var(--p); background: var(--p-soft); font-weight: 600; }
+.bm-nav-item svg { flex-shrink: 0; }
+
+/* Main content */
+.bm-main { flex: 1; position: relative; overflow: hidden; }
+.bm-screen {
+  position: absolute; inset: 0;
+  padding: 14px; opacity: 0;
+  transition: opacity .3s ease;
+  overflow: hidden;
+}
+.bm-screen.active { opacity: 1; }
+
+/* Scan line */
+.bm-scan-line {
+  position: absolute; top: 0; bottom: 0; left: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, transparent, var(--p2), transparent);
+  opacity: 0; z-index: 10; pointer-events: none;
+}
+.bm-scan-line.scanning {
+  opacity: .9; animation: scanAnim .45s ease-out forwards;
+}
+@keyframes scanAnim { from{left:0;opacity:.9} to{left:100%;opacity:0} }
+
+/* ──────────────────────────────────
+   SCREEN 0 — Dashboard
+────────────────────────────────── */
+.bm-greeting {
+  font-family: var(--font-head); font-size: .9rem;
+  font-weight: 700; color: var(--text); margin-bottom: 8px;
+}
+.bm-chips { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.bm-chip {
+  background: var(--p-soft); color: var(--p);
+  border: 1px solid var(--border); border-radius: 5px;
+  padding: 2px 8px; font-size: .65rem; font-weight: 600;
+}
+
+/* CSS Chart — no SVG text, so no stretching */
+.bm-chart-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 10px 6px;
+}
+.bm-chart-card-title { font-size: .7rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.bm-chart-layout { display: flex; gap: 4px; }
+.chart-ylabels {
+  display: flex; flex-direction: column; justify-content: space-between;
+  font-size: .62rem; color: var(--text3); padding-bottom: 16px;
+  flex-shrink: 0; width: 28px; text-align: right;
+}
+.chart-main { flex: 1; }
+.chart-svg-wrap {
+  width: 100%; height: 110px; position: relative; overflow: hidden;
+}
+.chart-svg-wrap svg { width: 100%; height: 100%; }
+/* SVG only has geometric shapes — no text. No stretching issue. */
+.chart-endlabel {
+  position: absolute; top: 2px; right: 0px;
+  background: var(--p); color: white;
+  font-size: .62rem; font-weight: 700;
+  padding: 2px 6px; border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0; transition: opacity .3s;
+}
+.chart-xlabels {
+  display: flex; justify-content: space-between;
+  font-size: .58rem; color: var(--text3); margin-top: 3px;
+  padding: 0 0 0 0;
+}
+
+/* ──────────────────────────────────
+   SCREEN 1 — Worksheets
+────────────────────────────────── */
+.bm-screen-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.bm-screen-title {
+  font-family: var(--font-head); font-size: .88rem;
+  font-weight: 700; color: var(--text);
+}
+.bm-search-row {
+  display: flex; gap: 6px; margin-bottom: 10px;
+  align-items: center;
+}
+.bm-search-input {
+  flex: 1; border: 1px solid var(--border); border-radius: 6px;
+  padding: 5px 10px; font-size: .73rem; font-family: var(--font-body);
+  color: var(--text); outline: none; background: white;
+  transition: border-color .2s, box-shadow .2s;
+}
+.bm-search-input:focus, .bm-search-input.typing {
+  border-color: var(--p);
+  box-shadow: 0 0 0 3px rgba(124,58,237,.1);
+}
+.bm-search-btn {
+  padding: 5px 12px; border-radius: 6px;
+  background: var(--p); color: white; border: none; cursor: pointer;
+  font-size: .68rem; font-weight: 600; font-family: var(--font-body);
+  flex-shrink: 0; transition: background .2s;
+}
+.bm-ws-row {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 9px; border: 1px solid var(--border); border-radius: 7px;
+  margin-bottom: 6px; background: white;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .3s ease, transform .3s ease;
+}
+.bm-ws-row.show { opacity: 1; transform: none; }
+.bm-ws-row.hidden { display: none; }
+.bm-ws-icon {
+  width: 26px; height: 26px; border-radius: 5px; background: var(--p-soft);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.bm-ws-name { font-size: .72rem; font-weight: 600; color: var(--text); }
+.bm-ws-sub { font-size: .62rem; color: var(--text3); }
+.bm-ws-dl {
+  margin-left: auto; font-size: .62rem; font-weight: 600;
+  color: var(--p); background: var(--p-soft);
+  border: 1px solid var(--border); border-radius: 4px;
+  padding: 2px 7px; cursor: pointer; flex-shrink: 0;
+}
+.ws-tag-trig { background: rgba(124,58,237,.1); }
+
+/* ──────────────────────────────────
+   SCREEN 2 — Past Papers
+────────────────────────────────── */
+.bm-upload-card {
+  border: 1px solid var(--border); border-radius: 8px;
+  overflow: hidden; margin-bottom: 10px;
+}
+.bm-upload-header {
+  background: var(--bg2); padding: 7px 11px;
+  font-size: .7rem; font-weight: 600; color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+.bm-upload-row {
+  padding: 8px 11px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.bm-upload-info { font-size: .68rem; color: var(--text2); }
+.bm-upload-btn {
+  font-size: .63rem; font-weight: 600;
+  background: var(--p); color: white;
+  border: none; border-radius: 4px;
+  padding: 4px 9px; cursor: pointer; font-family: var(--font-body);
+}
+.bm-drop-zone {
+  border: 2px dashed var(--border); border-radius: 8px;
+  padding: 18px; text-align: center; margin-bottom: 10px;
+}
+.bm-drop-icon { font-size: 1.5rem; margin-bottom: 5px; }
+.bm-drop-text { font-size: .68rem; color: var(--text3); line-height: 1.5; }
+.bm-drop-text em { color: var(--p); font-style: normal; font-weight: 600; }
+.bm-tabs { display: flex; gap: 3px; }
+.bm-tab {
+  padding: 3px 9px; border-radius: 4px;
+  font-size: .65rem; font-weight: 600; cursor: pointer;
+  color: var(--text3); border: 1px solid transparent; transition: all .2s;
+}
+.bm-tab.active {
+  background: white; color: var(--p); border-color: var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+
+/* ──────────────────────────────────
+   SCREEN 3 — Results
+────────────────────────────────── */
+.bm-results-hero {
+  background: linear-gradient(135deg,#5B21B6,#7C3AED);
+  border-radius: 8px; padding: 13px;
+  display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+}
+.bm-score-ring svg { display: block; transform: rotate(-90deg); }
+.bm-score-info { color: white; }
+.bm-score-pct { font-family: var(--font-head); font-size: 1.3rem; font-weight: 800; line-height: 1; margin-bottom: 2px; }
+.bm-score-sub { font-size: .68rem; opacity: .8; margin-bottom: 3px; }
+.bm-score-marker { font-size: .65rem; opacity: .6; }
+.bm-topic-bars { margin-bottom: 10px; }
+.bm-topic-title { font-size: .68rem; font-weight: 600; color: var(--text); margin-bottom: 7px; }
+.bm-topic-row { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+.bm-topic-label { font-size: .63rem; color: var(--text3); width: 70px; text-align: right; flex-shrink: 0; }
+.bm-topic-track { flex: 1; background: var(--p-mid); border-radius: 3px; height: 5px; }
+.bm-topic-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg,var(--p),var(--p2)); width: 0; transition: width .9s cubic-bezier(.4,0,.2,1); }
+.bm-topic-pct { font-size: .63rem; color: var(--text); font-weight: 600; width: 24px; }
+.bm-ws-generated {
+  background: #ECFDF5; border: 1px solid #A7F3D0;
+  border-radius: 7px; padding: 8px 11px;
+  display: flex; align-items: center; gap: 9px;
+}
+.bm-ws-gen-text { font-size: .68rem; color: #065F46; font-weight: 600; flex: 1; }
+.bm-ws-gen-btn {
+  font-size: .62rem; font-weight: 600;
+  background: #10B981; color: white;
+  border: none; border-radius: 4px; padding: 3px 8px; cursor: pointer;
+}
+
+/* ═══ FLOATING PINS ═══ */
+.sc-pin {
+  position: absolute; z-index: 15;
+  max-width: 230px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .55s ease, transform .55s ease;
+}
+.sc-pin.vis { opacity: 1; pointer-events: auto; }
+.sc-pin-inner {
+  background: rgba(13,8,25,.88);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(124,58,237,.35);
+  border-radius: 12px; padding: 14px 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+.sc-pin-icon { font-size: 1.3rem; display: block; margin-bottom: 8px; }
+.sc-pin-tag {
+  font-size: .63rem; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--p3); display: block; margin-bottom: 5px;
+}
+.sc-pin-title {
+  font-family: var(--font-head); font-size: .95rem; font-weight: 700;
+  color: white; line-height: 1.25; margin-bottom: 7px;
+}
+.sc-pin-desc { font-size: .76rem; color: rgba(255,255,255,.5); line-height: 1.55; }
+.sc-pin-stat {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(124,58,237,.2); border: 1px solid rgba(124,58,237,.3);
+  border-radius: 6px; padding: 4px 9px;
+  font-size: .7rem; font-weight: 700; color: var(--p3); margin-top: 9px;
+}
+
+/* Pin positions */
+#pin-portal {
+  bottom: 42px; left: 50%; transform: translateX(-50%) translateY(14px);
+  max-width: 420px; text-align: center;
+}
+#pin-portal.vis { transform: translateX(-50%) translateY(0); }
+#pin-portal .sc-pin-inner {
+  background: transparent; border: none;
+  box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+}
+#pin-portal .sc-pin-title {
+  font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 800;
+  letter-spacing: -.04em; line-height: 1.05;
+  background: linear-gradient(110deg, #E9D5FF, #C084FC, #A78BFA);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; margin-bottom: 10px;
+}
+#pin-portal .sc-pin-desc { font-size: .88rem; color: rgba(255,255,255,.4); }
+
+#pin-dashboard { right: 3vw; top: 50%; transform: translateY(calc(-50% + 18px)); }
+#pin-dashboard.vis { transform: translateY(calc(-50% + 0px)); }
+
+#pin-greeting { left: 3vw; top: 38%; transform: translateY(calc(-50% + 18px)); }
+#pin-greeting.vis { transform: translateY(calc(-50% + 0px)); }
+
+#pin-sidebar { left: 3vw; top: 50%; transform: translateY(calc(-50% + 18px)); }
+#pin-sidebar.vis { transform: translateY(calc(-50% + 0px)); }
+
+#pin-worksheets { right: 3vw; top: 50%; transform: translateY(calc(-50% + 18px)); }
+#pin-worksheets.vis { transform: translateY(calc(-50% + 0px)); }
+
+#pin-search { right: 3vw; top: 42%; transform: translateY(calc(-50% + 18px)); }
+#pin-search.vis { transform: translateY(calc(-50% + 0px)); }
+
+#pin-typed { left: 3vw; top: 42%; transform: translateY(calc(-50% + 18px)); }
+#pin-typed.vis { transform: translateY(calc(-50% + 0px)); }
+
+#pin-pastpapers { left: 3vw; top: 50%; transform: translateY(calc(-50% + 18px)); }
+#pin-pastpapers.vis { transform: translateY(calc(-50% + 0px)); }
+
+#pin-papersview { right: 3vw; top: 50%; transform: translateY(calc(-50% + 18px)); }
+#pin-papersview.vis { transform: translateY(calc(-50% + 0px)); }
+
+#pin-results { left: 3vw; top: 50%; transform: translateY(calc(-50% + 18px)); }
+#pin-results.vis { transform: translateY(calc(-50% + 0px)); }
+
+#pin-reveal {
+  bottom: 40px; left: 50%; transform: translateX(-50%) translateY(18px);
+  max-width: 500px; text-align: center;
+}
+#pin-reveal.vis { transform: translateX(-50%) translateY(0); }
+#pin-reveal .sc-pin-inner {
+  background: transparent; border: none;
+  box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+}
+#pin-reveal .sc-pin-title {
+  font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 800;
+  letter-spacing: -.04em; line-height: 1;
+  background: linear-gradient(110deg, #E9D5FF, #C084FC, #A78BFA);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; margin-bottom: 12px;
+}
+#pin-reveal .sc-pin-desc { font-size: .9rem; color: rgba(255,255,255,.38); max-width: 380px; margin: 0 auto; }
+
+/* ═══ STEP DOTS (right edge) ═══ */
+.sc-steps {
+  position: absolute; right: 18px; top: 50%;
+  transform: translateY(-50%); z-index: 20;
+  display: flex; flex-direction: column; gap: 9px;
+}
+.sc-step-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,.3);
+  transition: background .4s, transform .4s; cursor: pointer;
+}
+.sc-step-dot.active { background: white; transform: scale(1.8); }
+
+/* ═══ CTA ═══ */
+#portal-cta {
+  background: linear-gradient(135deg, #4C1D95, #7C3AED, #9333EA);
+  padding: 120px 48px; text-align: center; position: relative; overflow: hidden;
+}
+#portal-cta::before {
+  content: '';
+  position: absolute; width: 600px; height: 600px;
+  background: radial-gradient(ellipse, rgba(255,255,255,.1) 0%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none;
+}
+#portal-cta .inner { position: relative; z-index: 1; }
+#portal-cta h2 {
+  font-family: var(--font-head); font-size: clamp(2rem,3.5vw,3rem);
+  font-weight: 800; letter-spacing: -.03em; color: white; margin-bottom: 16px;
+}
+#portal-cta p { color: rgba(255,255,255,.75); font-size: 1rem; max-width: 440px; margin: 0 auto 36px; line-height: 1.75; }
+.cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* ═══ FOOTER ═══ */
+footer { background: #1E1035; padding: 64px 48px 0; }
+.footer-grid {
+  max-width: 1160px; margin: 0 auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 40px; padding-bottom: 48px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.footer-brand { display: flex; flex-direction: column; gap: 12px; }
+.footer-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-head); font-weight: 700; font-size: .95rem;
+  color: white; text-decoration: none;
+}
+.footer-desc { font-size: .8rem; color: rgba(255,255,255,.35); line-height: 1.65; max-width: 240px; }
+.footer-socials { display: flex; gap: 8px; }
+.footer-social {
+  width: 32px; height: 32px; border-radius: 7px;
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.09);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,.45); text-decoration: none; font-size: .75rem;
+  transition: background .2s, color .2s;
+}
+.footer-social:hover { background: var(--p); color: white; }
+.footer-col h4 {
+  font-family: var(--font-head); font-size: .78rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: rgba(255,255,255,.28); margin-bottom: 14px;
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.footer-col ul li a { color: rgba(255,255,255,.45); text-decoration: none; font-size: .82rem; transition: color .2s; }
+.footer-col ul li a:hover { color: white; }
+.footer-contact { display: flex; flex-direction: column; gap: 8px; }
+.footer-contact-item { font-size: .8rem; color: rgba(255,255,255,.4); line-height: 1.45; }
+.footer-contact-item a { color: rgba(255,255,255,.45); text-decoration: none; }
+.footer-contact-item a:hover { color: white; }
+.footer-bottom {
+  max-width: 1160px; margin: 0 auto; padding: 20px 0;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: .75rem; color: rgba(255,255,255,.22); flex-wrap: wrap; gap: 10px;
+}
+.footer-bottom a { color: rgba(255,255,255,.22); text-decoration: none; }
+.footer-bottom a:hover { color: rgba(255,255,255,.5); }
+.footer-bottom-links { display: flex; gap: 18px; }
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 900px) {
+  nav { padding: 0 20px; }
+  .nav-links li:not(:last-child) { display: none; }
+  .sc-pin:not(#pin-reveal):not(#pin-portal) { display: none; }
+  .sc-steps { display: none; }
+  #portal-cta { padding: 72px 24px; }
+  footer { padding: 48px 24px 0; }
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+}
+</style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="beam-academy.html" class="nav-brand">
+    <img src="https://beamacademy.info/logo-star.png" class="beam-star-logo" alt="BEAM"
+      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="beam-icon" style="display:none">B</div>
+    BEAM Academy
+  </a>
+  <ul class="nav-links">
+    <li><a href="beam-academy.html">← Back to BEAM Academy</a></li>
+    <li><a href="beam-academy.html#pricing">Pricing</a></li>
+    <li><a href="beam-academy.html#cta" class="nav-cta">Free Trial</a></li>
+  </ul>
+</nav>
+
+<!-- ════════════════════════════════════════════
+     SHOWCASE — 1200vh scroll-driven zoom tour
+════════════════════════════════════════════ -->
+<div id="showcase">
+  <div class="showcase-sticky" id="showcaseSticky">
+
+    <div class="sc-glow"></div>
+
+    <!-- Title label (visible at start) -->
+    <div class="sc-portal-title" id="scTitle">
+      <div class="badge">Student Portal · Exclusive Access</div>
+      <h1>The BEAM Portal</h1>
+    </div>
+
+    <!-- ═══ THE PORTAL MOCKUP ═══ -->
+    <div class="sc-mockup-wrap" id="scMockWrap">
+      <div class="bmock">
+
+        <!-- Browser chrome -->
+        <div class="bmock-chrome">
+          <div class="bm-dots">
+            <div class="bm-dot bm-dot-r"></div>
+            <div class="bm-dot bm-dot-y"></div>
+            <div class="bm-dot bm-dot-g"></div>
+          </div>
+          <span class="bm-nav-btn">‹ ›</span>
+          <div class="bm-url" id="bm-url">portal.beamacademy.com/dashboard</div>
+        </div>
+
+        <!-- Portal body -->
+        <div class="bmock-body">
+
+          <!-- ── Sidebar ── -->
+          <div class="bm-sidebar">
+            <div class="bm-logo">
+              <div class="bm-logo-b">B</div>
+              <span class="bm-logo-text">BEAM Portal</span>
+            </div>
+            <div class="bm-nav-item active" id="nav-0">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+              Dashboard
+            </div>
+            <div class="bm-nav-item" id="nav-1">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="1" width="12" height="14" rx="1.5"/><path d="M5 5h6M5 7.5h6M5 10h4" stroke-linecap="round"/></svg>
+              Worksheets
+            </div>
+            <div class="bm-nav-item" id="nav-2">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h7l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M10 2v3h3M5 8h6M5 10.5h4" stroke-linecap="round"/></svg>
+              Past Papers
+            </div>
+            <div class="bm-nav-item" id="nav-3">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13L5 8 8 10 11 5 14 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Results
+            </div>
+            <div class="bm-nav-item" id="nav-4">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="1" width="12" height="14" rx="1.5"/><path d="M5 5.5h6M5 8h4M5 10.5h5" stroke-linecap="round"/></svg>
+              Homework
+            </div>
+            <div class="bm-nav-item" id="nav-5">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v7a1 1 0 01-1 1H9l-3 2v-2H3a1 1 0 01-1-1V3z"/></svg>
+              Q&amp;A
+            </div>
+            <div class="bm-nav-item" id="nav-6">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="9" r="6"/><path d="M8 9V6M6 1h4" stroke-linecap="round"/></svg>
+              Study Timer
+            </div>
+          </div>
+
+          <!-- ── Main content ── -->
+          <div class="bm-main">
+            <div class="bm-scan-line" id="bm-scan"></div>
+
+            <!-- SCREEN 0: Dashboard -->
+            <div class="bm-screen active" id="screen-0">
+              <div class="bm-greeting">Good morning, Alex! 🌟</div>
+              <div class="bm-chips">
+                <div class="bm-chip">2 worksheets pending</div>
+                <div class="bm-chip">3 papers complete</div>
+                <div class="bm-chip">↑ 89% this week</div>
+              </div>
+              <div class="bm-chart-card">
+                <div class="bm-chart-card-title">Your Progress — Weeks 1–8</div>
+                <div class="bm-chart-layout">
+                  <!-- Y labels as HTML — never stretches -->
+                  <div class="chart-ylabels">
+                    <span>90%</span>
+                    <span>80%</span>
+                    <span>70%</span>
+                    <span>60%</span>
+                  </div>
+                  <div class="chart-main">
+                    <div class="chart-svg-wrap">
+                      <!-- SVG contains ONLY geometric shapes, zero text → no elongation -->
+                      <svg viewBox="0 0 100 100" preserveAspectRatio="none"
+                        style="position:absolute;inset:0;width:100%;height:100%">
+                        <defs>
+                          <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="rgba(124,58,237,.22)"/>
+                            <stop offset="100%" stop-color="rgba(124,58,237,0)"/>
+                          </linearGradient>
+                        </defs>
+                        <!-- Grid lines (horizontal — fine with preserveAspectRatio=none) -->
+                        <line x1="0" y1="0"    x2="100" y2="0"    stroke="rgba(0,0,0,.06)" stroke-width=".6"/>
+                        <line x1="0" y1="33.3" x2="100" y2="33.3" stroke="rgba(0,0,0,.06)" stroke-width=".6"/>
+                        <line x1="0" y1="66.7" x2="100" y2="66.7" stroke="rgba(0,0,0,.06)" stroke-width=".6"/>
+                        <line x1="0" y1="100"  x2="100" y2="100"  stroke="rgba(0,0,0,.06)" stroke-width=".6"/>
+                        <!-- Area fill -->
+                        <path d="M5,93.3 L19.3,83.3 L33.6,73.3 L47.9,60 L62.1,46.7 L76.4,30 L90.7,16.7 L100,3.3 L100,100 L5,100 Z"
+                          fill="url(#cg)"/>
+                        <!-- Line — no text, so preserveAspectRatio=none is fine -->
+                        <path id="chartLine"
+                          d="M5,93.3 L19.3,83.3 L33.6,73.3 L47.9,60 L62.1,46.7 L76.4,30 L90.7,16.7 L100,3.3"
+                          fill="none" stroke="#7C3AED" stroke-width="1.8"
+                          stroke-linecap="round" stroke-linejoin="round"
+                          stroke-dasharray="220" stroke-dashoffset="220"/>
+                        <!-- End dot (no text) -->
+                        <circle id="chartDot" cx="100" cy="3.3" r="2.5" fill="#7C3AED" opacity="0"/>
+                      </svg>
+                      <!-- End badge as HTML, not in SVG -->
+                      <div class="chart-endlabel" id="chartEndLabel">89% ↑</div>
+                    </div>
+                    <!-- X labels as HTML — never stretches -->
+                    <div class="chart-xlabels">
+                      <span>W1</span><span>W2</span><span>W3</span><span>W4</span>
+                      <span>W5</span><span>W6</span><span>W7</span><span>W8</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SCREEN 1: Worksheets -->
+            <div class="bm-screen" id="screen-1">
+              <div class="bm-screen-header">
+                <div class="bm-screen-title">My Worksheets</div>
+              </div>
+              <div class="bm-search-row">
+                <input id="wsSearch" class="bm-search-input" type="text" placeholder="Search worksheets…" readonly>
+                <button class="bm-search-btn" id="wsSearchBtn">Search</button>
+              </div>
+              <!-- All worksheets (visible by default) -->
+              <div class="bm-ws-row" id="ws-row-0">
+                <div class="bm-ws-icon"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--p)" stroke-width="1.5"><rect x="2" y="1" width="12" height="14" rx="1.5"/><path d="M5 5h6M5 7.5h6M5 10h4" stroke-linecap="round"/></svg></div>
+                <div><div class="bm-ws-name">Calculus — Integration by Parts</div><div class="bm-ws-sub">Maths Ext1 · Week 6 · 12 questions</div></div>
+                <div class="bm-ws-dl">↓</div>
+              </div>
+              <div class="bm-ws-row" id="ws-row-1">
+                <div class="bm-ws-icon"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--p)" stroke-width="1.5"><rect x="2" y="1" width="12" height="14" rx="1.5"/><path d="M5 5h6M5 7.5h6M5 10h4" stroke-linecap="round"/></svg></div>
+                <div><div class="bm-ws-name">Module B — Essay Technique</div><div class="bm-ws-sub">English Adv · Week 5 · 3 tasks</div></div>
+                <div class="bm-ws-dl">↓</div>
+              </div>
+              <div class="bm-ws-row" id="ws-row-2">
+                <div class="bm-ws-icon"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--p)" stroke-width="1.5"><rect x="2" y="1" width="12" height="14" rx="1.5"/><path d="M5 5h6M5 7.5h6M5 10h4" stroke-linecap="round"/></svg></div>
+                <div><div class="bm-ws-name">Equilibrium &amp; Acids</div><div class="bm-ws-sub">Chemistry · Week 6 · 15 questions</div></div>
+                <div class="bm-ws-dl">↓</div>
+              </div>
+              <!-- Trigonometry worksheet — shown only after search -->
+              <div class="bm-ws-row ws-tag-trig hidden" id="ws-row-trig">
+                <div class="bm-ws-icon ws-tag-trig"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--p)" stroke-width="1.5"><rect x="2" y="1" width="12" height="14" rx="1.5"/><path d="M5 5h6M5 7.5h6M5 10h4" stroke-linecap="round"/></svg></div>
+                <div><div class="bm-ws-name">Trigonometry — Identities &amp; Graphs</div><div class="bm-ws-sub">Maths Adv · Week 4 · 10 questions</div></div>
+                <div class="bm-ws-dl">↓</div>
+              </div>
+            </div>
+
+            <!-- SCREEN 2: Past Papers -->
+            <div class="bm-screen" id="screen-2">
+              <div class="bm-screen-header">
+                <div class="bm-screen-title">Past Papers</div>
+              </div>
+              <div class="bm-upload-card">
+                <div class="bm-upload-header">Submit for Overnight Marking</div>
+                <div class="bm-upload-row">
+                  <div class="bm-upload-info">Upload a completed past paper for expert tutor review</div>
+                  <button class="bm-upload-btn">Upload PDF</button>
+                </div>
+              </div>
+              <div class="bm-drop-zone">
+                <div class="bm-drop-icon">📄</div>
+                <div class="bm-drop-text">Drag &amp; drop your scan here, or click Upload<br><em>CamScanner · any PDF · results back overnight</em></div>
+              </div>
+              <div class="bm-tabs">
+                <button class="bm-tab active">All</button>
+                <button class="bm-tab">Maths</button>
+                <button class="bm-tab">English</button>
+                <button class="bm-tab">Physics</button>
+                <button class="bm-tab">Chemistry</button>
+              </div>
+            </div>
+
+            <!-- SCREEN 3: Results -->
+            <div class="bm-screen" id="screen-3">
+              <div class="bm-screen-header">
+                <div class="bm-screen-title">Past Paper Results</div>
+              </div>
+              <div class="bm-results-hero">
+                <div class="bm-score-ring">
+                  <svg width="64" height="64" viewBox="0 0 64 64">
+                    <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="6"/>
+                    <circle id="result-ring" cx="32" cy="32" r="26" fill="none" stroke="white" stroke-width="6"
+                      stroke-dasharray="163.4" stroke-dashoffset="163.4" stroke-linecap="round"/>
+                    <text x="32" y="36" text-anchor="middle" fill="white" font-size="13" font-weight="800"
+                      font-family="Bricolage Grotesque, sans-serif">90%</text>
+                  </svg>
+                </div>
+                <div class="bm-score-info">
+                  <div class="bm-score-pct">76 / 84 · Excellent</div>
+                  <div class="bm-score-sub">HSC Mathematics 2023 Trial</div>
+                  <div class="bm-score-marker">Marked by Chris Kim · Band 6</div>
+                </div>
+              </div>
+              <div class="bm-topic-bars">
+                <div class="bm-topic-title">Topic Breakdown</div>
+                <div class="bm-topic-row">
+                  <div class="bm-topic-label">Algebra</div>
+                  <div class="bm-topic-track"><div class="bm-topic-fill" id="tf-0" data-w="95"></div></div>
+                  <div class="bm-topic-pct">95%</div>
+                </div>
+                <div class="bm-topic-row">
+                  <div class="bm-topic-label">Calculus</div>
+                  <div class="bm-topic-track"><div class="bm-topic-fill" id="tf-1" data-w="88"></div></div>
+                  <div class="bm-topic-pct">88%</div>
+                </div>
+                <div class="bm-topic-row">
+                  <div class="bm-topic-label">Statistics</div>
+                  <div class="bm-topic-track"><div class="bm-topic-fill" id="tf-2" data-w="72"></div></div>
+                  <div class="bm-topic-pct">72%</div>
+                </div>
+                <div class="bm-topic-row">
+                  <div class="bm-topic-label">Functions</div>
+                  <div class="bm-topic-track"><div class="bm-topic-fill" id="tf-3" data-w="91"></div></div>
+                  <div class="bm-topic-pct">91%</div>
+                </div>
+              </div>
+              <div class="bm-ws-generated">
+                <div style="font-size:.95rem">📄</div>
+                <div class="bm-ws-gen-text">Custom Worksheet Generated — Statistics (weak area)</div>
+                <button class="bm-ws-gen-btn">Download</button>
+              </div>
+            </div>
+
+          </div><!-- /bm-main -->
+        </div><!-- /bmock-body -->
+      </div><!-- /bmock -->
+    </div><!-- /sc-mockup-wrap -->
+
+    <!-- ═══ FLOATING PINS ═══ -->
+
+    <!-- Pin: initial overview / The BEAM Portal title -->
+    <div class="sc-pin" id="pin-portal">
+      <div class="sc-pin-inner">
+        <div class="sc-pin-title">The BEAM Portal.</div>
+        <div class="sc-pin-desc">Scroll — or use <kbd style="font-family:monospace;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);padding:1px 5px;border-radius:3px;font-size:.7rem">Space</kbd> / <kbd style="font-family:monospace;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);padding:1px 5px;border-radius:3px;font-size:.7rem">↓</kbd> — to tour what every BEAM student gets from lesson one.</div>
+      </div>
+    </div>
+
+    <!-- Pin: dashboard — progress chart -->
+    <div class="sc-pin" id="pin-dashboard">
+      <div class="sc-pin-inner">
+        <span class="sc-pin-icon">📈</span>
+        <span class="sc-pin-tag">Live Progress Tracking</span>
+        <div class="sc-pin-title">Every topic, every week.</div>
+        <div class="sc-pin-desc">Not a vague "doing well". An exact score per topic updated after every session.</div>
+        <div class="sc-pin-stat">89% ↑ personal best — Week 8</div>
+      </div>
+    </div>
+
+    <!-- Pin: dashboard — greeting -->
+    <div class="sc-pin" id="pin-greeting">
+      <div class="sc-pin-inner">
+        <span class="sc-pin-icon">👋</span>
+        <span class="sc-pin-tag">Your Dashboard</span>
+        <div class="sc-pin-title">Personalised from day one.</div>
+        <div class="sc-pin-desc">Your name, your subjects, your upcoming sessions — all at a glance the moment you log in.</div>
+      </div>
+    </div>
+
+    <!-- Pin: sidebar -->
+    <div class="sc-pin" id="pin-sidebar">
+      <div class="sc-pin-inner">
+        <span class="sc-pin-icon">🗂️</span>
+        <span class="sc-pin-tag">All In One Place</span>
+        <div class="sc-pin-title">Six tools. One login.</div>
+        <div class="sc-pin-desc">Dashboard, Worksheets, Past Papers, Results, Homework, Q&amp;A and a Study Timer — all accessible from the sidebar.</div>
+      </div>
+    </div>
+
+    <!-- Pin: worksheets overview -->
+    <div class="sc-pin" id="pin-worksheets">
+      <div class="sc-pin-inner">
+        <span class="sc-pin-icon">📋</span>
+        <span class="sc-pin-tag">Custom Worksheets</span>
+        <div class="sc-pin-title">Built for you, not everyone.</div>
+        <div class="sc-pin-desc">Every worksheet is generated from your personal diagnostic data — the exact questions costing you marks.</div>
+        <div class="sc-pin-stat">Answer key + worked solutions included</div>
+      </div>
+    </div>
+
+    <!-- Pin: search focused -->
+    <div class="sc-pin" id="pin-search">
+      <div class="sc-pin-inner">
+        <span class="sc-pin-icon">🔍</span>
+        <span class="sc-pin-tag">Worksheet Search</span>
+        <div class="sc-pin-title">Find anything instantly.</div>
+        <div class="sc-pin-desc">Search across all your worksheets by topic, subject, or week. The entire library — pulled up in a second.</div>
+      </div>
+    </div>
+
+    <!-- Pin: search typed trigonometry -->
+    <div class="sc-pin" id="pin-typed">
+      <div class="sc-pin-inner">
+        <span class="sc-pin-icon">⚡</span>
+        <span class="sc-pin-tag">Instant Results</span>
+        <div class="sc-pin-title">Your exact topic, right there.</div>
+        <div class="sc-pin-desc">Type "trigonometry" — every trig worksheet you've ever been assigned surfaces immediately, ready to download.</div>
+      </div>
+    </div>
+
+    <!-- Pin: past papers sidebar -->
+    <div class="sc-pin" id="pin-pastpapers">
+      <div class="sc-pin-inner">
+        <span class="sc-pin-icon">📤</span>
+        <span class="sc-pin-tag">Past Paper Marking</span>
+        <div class="sc-pin-title">Upload tonight, results tomorrow.</div>
+        <div class="sc-pin-desc">Your tutor personally reviews every question — not automated, not AI. Real feedback by morning.</div>
+        <div class="sc-pin-stat">&lt;24 hour guaranteed turnaround</div>
+      </div>
+    </div>
+
+    <!-- Pin: past papers full view -->
+    <div class="sc-pin" id="pin-papersview">
+      <div class="sc-pin-inner">
+        <span class="sc-pin-icon">📎</span>
+        <span class="sc-pin-tag">Any Paper, Any Subject</span>
+        <div class="sc-pin-title">Maths, English, Chemistry, Physics.</div>
+        <div class="sc-pin-desc">Upload a PDF scan — CamScanner works perfectly. Supports all HSC subjects covered by BEAM tutors.</div>
+      </div>
+    </div>
+
+    <!-- Pin: results -->
+    <div class="sc-pin" id="pin-results">
+      <div class="sc-pin-inner">
+        <span class="sc-pin-icon">🎯</span>
+        <span class="sc-pin-tag">Detailed Results</span>
+        <div class="sc-pin-title">Every mistake mapped to a plan.</div>
+        <div class="sc-pin-desc">Score by topic, written comments on each wrong answer, and a custom worksheet generated automatically when marking is done.</div>
+        <div class="sc-pin-stat">90% · 76/84 · Band 6</div>
+      </div>
+    </div>
+
+    <!-- Pin: end reveal -->
+    <div class="sc-pin" id="pin-reveal">
+      <div class="sc-pin-inner">
+        <div class="sc-pin-title">The BEAM Portal.</div>
+        <div class="sc-pin-desc">Full access from your very first lesson. No extra cost. No setup. Just log in.</div>
+      </div>
+    </div>
+
+    <!-- Step dots -->
+    <div class="sc-steps" id="scSteps">
+      <div class="sc-step-dot active" id="sd-0"></div>
+      <div class="sc-step-dot" id="sd-1"></div>
+      <div class="sc-step-dot" id="sd-2"></div>
+      <div class="sc-step-dot" id="sd-3"></div>
+      <div class="sc-step-dot" id="sd-4"></div>
+      <div class="sc-step-dot" id="sd-5"></div>
+      <div class="sc-step-dot" id="sd-6"></div>
+      <div class="sc-step-dot" id="sd-7"></div>
+      <div class="sc-step-dot" id="sd-8"></div>
+      <div class="sc-step-dot" id="sd-9"></div>
+      <div class="sc-step-dot" id="sd-10"></div>
+      <div class="sc-step-dot" id="sd-11"></div>
+    </div>
+
+  </div><!-- /showcase-sticky -->
+</div><!-- /showcase -->
+
+<!-- CTA -->
+<div id="portal-cta">
+  <div class="inner">
+    <div class="section-tag">Get Started</div>
+    <h2>Ready to experience it yourself?</h2>
+    <p>Every BEAM student gets full portal access from their very first lesson. Book a free trial and log in the same day.</p>
+    <div class="cta-btns">
+      <a href="beam-academy.html#cta" class="btn btn-p btn-magnetic">Book Your Free Trial →</a>
+      <a href="beam-academy.html" class="btn btn-wo">← Back to BEAM Academy</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="beam-academy.html" class="footer-logo">
+        <img src="https://beamacademy.info/logo-star.png" class="beam-star-logo" alt="BEAM"
+          style="background:rgba(255,255,255,.12)"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="beam-icon" style="display:none">B</div>
+        BEAM Academy
+      </a>
+      <p class="footer-desc">Expert HSC tutoring in Epping, Sydney. Built by BHHS graduates. Years 7–12 Maths, English, Chemistry, Physics.</p>
+      <div class="footer-socials">
+        <a href="https://www.instagram.com/beamacademyhsc" target="_blank" class="footer-social">📷</a>
+        <a href="https://discord.gg/Y4Y8uTun" target="_blank" class="footer-social">💬</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="beam-academy.html#why">Why BEAM</a></li>
+        <li><a href="beam-academy.html#tutors">Tutors</a></li>
+        <li><a href="beam-academy.html#subjects">Subjects</a></li>
+        <li><a href="beam-academy.html#pricing">Pricing</a></li>
+        <li><a href="beam-academy.html#faq">FAQ</a></li>
+        <li><a href="beam-academy.html#cta">Free Trial</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Subjects</h4>
+      <ul>
+        <li><a href="beam-academy.html#subjects">Mathematics</a></li>
+        <li><a href="beam-academy.html#subjects">English</a></li>
+        <li><a href="beam-academy.html#subjects">Chemistry</a></li>
+        <li><a href="beam-academy.html#subjects">Physics</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="footer-contact">
+        <div class="footer-contact-item"><a href="tel:0491791447">0491 791 447</a></div>
+        <div class="footer-contact-item"><a href="mailto:admin@beamacademy.info">admin@beamacademy.info</a></div>
+        <div class="footer-contact-item">Suite 206, 2 Pembroke St, Epping NSW 2121</div>
+        <div class="footer-contact-item">ABN 19 693 809 013</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 BEAM Academy. All rights reserved.</span>
+    <div class="footer-bottom-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms &amp; Conditions</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// BEAM PORTAL — SCROLL-DRIVEN ZOOM EXPERIENCE
+//
+// 12 keyframes across 1200vh (100vh per keyframe segment)
+//
+// KF  0  (0.00): Full portal view — "The BEAM Portal" title visible
+// KF  1  (0.08): Zoom into greeting + chart area, two pins appear
+// KF  2  (0.17): Pan left to show sidebar prominently + sidebar pin
+// KF  3  (0.25): Worksheets selected, pan to show full screen + pin
+// KF  4  (0.34): Zoom into search bar area — search pin appears
+// KF  5  (0.43): "Trigonometry" typed — filtered result appears
+// KF  6  (0.51): Zoom out to full view
+// KF  7  (0.59): Pan left to sidebar, Past Papers selected + pin
+// KF  8  (0.67): Pan back to show full Past Papers screen + pin
+// KF  9  (0.76): Results page shown — zoom in slightly + pin
+// KF 10  (0.84): Zoom to sidebar, Dashboard selected
+// KF 11  (0.92): Zoom out to full dashboard, big reveal
+// ══════════════════════════════════════════════════════════════════
+
+// transform: scale(S) translate(tx%, ty%) with transform-origin: center
+// To focus on point (cx, cy) as fraction of element [0..1]:
+//   tx% = (0.5 - cx) * 100, ty% = (0.5 - cy) * 100
+//
+// Mockup layout:
+//   Sidebar width: 154px / ~940px total ≈ 16.4%
+//   Chrome height: ~41px / ~501px total ≈ 8.2%
+//   Body height: ~460px / ~501px total ≈ 91.8%
+//   Main content: x from 16.4% to 100%, y from 8.2% to 100%
+//   Main content center x: (0.164 + 1.0) / 2 = 0.582
+//   Greeting y: 8.2% + padding = ~12%
+//   Chart mid y: ~42%
+
+const KF = [
+  // 0: full view — portal title visible
+  { s:1.00, tx:  0,  ty:  0,  scr:0, nav:0, url:'portal.beamacademy.com/dashboard',
+    pins:['pin-portal'], title:1 },
+  // 1: zoom into greeting + chart (greeting still visible)
+  // cx=0.582 (main content center x), cy=0.32 (upper-mid, covers greeting + chart top)
+  { s:1.85, tx: -8,  ty: 18,  scr:0, nav:0, url:'portal.beamacademy.com/dashboard',
+    pins:['pin-dashboard','pin-greeting'], title:0 },
+  // 2: pan left to show sidebar + some main content
+  // cx=0.28 (between sidebar center 0.082 and main center 0.58), cy=0.50
+  { s:1.85, tx: 22,  ty:  0,  scr:0, nav:0, url:'portal.beamacademy.com/dashboard',
+    pins:['pin-sidebar'], title:0 },
+  // 3: worksheets selected, full screen pan to main content
+  // cx=0.58 (main content center), cy=0.50
+  { s:1.85, tx: -8,  ty:  0,  scr:1, nav:1, url:'portal.beamacademy.com/worksheets',
+    pins:['pin-worksheets'], title:0 },
+  // 4: crop to show search row — scale 2.0, tx=5 so left edge of main content stays in frame
+  // Focus at x=45% (includes sidebar end + main), y=18% (search bar area)
+  { s:2.00, tx:  5,  ty: 32,  scr:1, nav:1, url:'portal.beamacademy.com/worksheets',
+    pins:['pin-search'], title:0, searchFocus:true },
+  // 5: same crop, trigonometry is typed — results appear
+  { s:2.00, tx:  5,  ty: 32,  scr:1, nav:1, url:'portal.beamacademy.com/worksheets',
+    pins:['pin-typed'], title:0, typeSearch:true },
+  // 6: zoom out to full view
+  { s:1.00, tx:  0,  ty:  0,  scr:1, nav:1, url:'portal.beamacademy.com/worksheets',
+    pins:[], title:0 },
+  // 7: pan to sidebar, past papers selected
+  { s:1.85, tx: 22,  ty:  0,  scr:2, nav:2, url:'portal.beamacademy.com/past-papers',
+    pins:['pin-pastpapers'], title:0 },
+  // 8: pan to show full past papers screen
+  { s:1.85, tx: -8,  ty:  0,  scr:2, nav:2, url:'portal.beamacademy.com/past-papers',
+    pins:['pin-papersview'], title:0 },
+  // 9: results page, slight zoom
+  { s:2.00, tx: -8,  ty: -4,  scr:3, nav:3, url:'portal.beamacademy.com/results',
+    pins:['pin-results'], title:0 },
+  // 10: pan to sidebar, dashboard selected
+  { s:1.85, tx: 22,  ty:  0,  scr:0, nav:0, url:'portal.beamacademy.com/dashboard',
+    pins:[], title:0 },
+  // 11: zoom out to full, The BEAM Portal reveal
+  { s:1.00, tx:  0,  ty:  0,  scr:0, nav:0, url:'portal.beamacademy.com/dashboard',
+    pins:['pin-reveal'], title:0 },
+];
+
+// Progress threshold for each keyframe (when it becomes the "active" keyframe)
+const KF_AT = KF.map((_, i) => i / (KF.length - 1));
+
+// ── Elements ──
+const showcase    = document.getElementById('showcase');
+const scMockWrap  = document.getElementById('scMockWrap');
+const bmUrl       = document.getElementById('bm-url');
+const scTitle     = document.getElementById('scTitle');
+
+// ── State ──
+let currentKF     = -1;
+let chartAnimated = false;
+let resultsAnimated = false;
+let typingTimer   = null;
+let searchFocused = false;
+let trigFiltered  = false;
+
+// All pin IDs
+const ALL_PINS = ['pin-portal','pin-dashboard','pin-greeting','pin-sidebar','pin-worksheets',
+                  'pin-search','pin-typed','pin-pastpapers','pin-papersview','pin-results','pin-reveal'];
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+// Ease in-out cubic
+function ease(t) {
+  return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+}
+
+// Get interpolated transform for current scroll progress
+function getTransform(p) {
+  // Find which segment we're in
+  let i = 0;
+  for (let k = KF_AT.length - 1; k >= 0; k--) {
+    if (p >= KF_AT[k]) { i = k; break; }
+  }
+  const j = Math.min(i + 1, KF.length - 1);
+  const a = KF[i], b = KF[j];
+  const segLen = KF_AT[j] - KF_AT[i];
+  const t = segLen > 0 ? ease(Math.min(1, (p - KF_AT[i]) / segLen)) : 1;
+  return {
+    s:  lerp(a.s,  b.s,  t),
+    tx: lerp(a.tx, b.tx, t),
+    ty: lerp(a.ty, b.ty, t),
+    kfIndex: i,
+    t,
+  };
+}
+
+function setScreen(scr, navId) {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('screen-' + i).classList.toggle('active', i === scr);
+  }
+  document.querySelectorAll('.bm-nav-item').forEach((el, i) => {
+    el.classList.toggle('active', i === navId);
+  });
+}
+
+function triggerScan() {
+  const el = document.getElementById('bm-scan');
+  if (!el) return;
+  el.classList.remove('scanning');
+  void el.offsetWidth;
+  el.classList.add('scanning');
+}
+
+function setPins(pinIds) {
+  ALL_PINS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('vis', pinIds.includes(id));
+  });
+}
+
+function setStepDot(idx) {
+  document.querySelectorAll('.sc-step-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === idx);
+  });
+}
+
+function animateChart() {
+  if (chartAnimated) return;
+  chartAnimated = true;
+  const line = document.getElementById('chartLine');
+  const dot  = document.getElementById('chartDot');
+  const lbl  = document.getElementById('chartEndLabel');
+  if (line) {
+    line.style.transition = 'stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1)';
+    line.style.strokeDashoffset = '0';
+    setTimeout(() => {
+      if (dot) { dot.style.transition = 'opacity .3s'; dot.style.opacity = '1'; }
+      if (lbl) lbl.style.opacity = '1';
+    }, 1500);
+  }
+}
+
+function animateResults() {
+  if (resultsAnimated) return;
+  resultsAnimated = true;
+  const ring = document.getElementById('result-ring');
+  if (ring) {
+    const offset = 163.4 * (1 - 0.90);
+    ring.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)';
+    ring.style.strokeDashoffset = offset;
+  }
+  [0,1,2,3].forEach((i, idx) => {
+    const el = document.getElementById('tf-' + i);
+    if (el) setTimeout(() => { el.style.width = el.dataset.w + '%'; }, 200 + idx * 120);
+  });
+}
+
+function animateWorksheets() {
+  [0,1,2].forEach((i) => {
+    const el = document.getElementById('ws-row-' + i);
+    if (!el) return;
+    el.classList.remove('show');
+    void el.offsetWidth;
+    setTimeout(() => el.classList.add('show'), 60 + i * 100);
+  });
+}
+
+function doSearchFocus() {
+  if (searchFocused) return;
+  searchFocused = true;
+  const inp = document.getElementById('wsSearch');
+  if (inp) inp.classList.add('typing');
+}
+
+function doTypeTrigonometry() {
+  if (trigFiltered) return;
+  trigFiltered = true;
+
+  const inp = document.getElementById('wsSearch');
+  const word = 'Trigonometry';
+  let i = 0;
+  clearInterval(typingTimer);
+  if (inp) inp.value = '';
+
+  typingTimer = setInterval(() => {
+    if (!inp) return;
+    inp.value = word.slice(0, ++i);
+    if (i >= word.length) {
+      clearInterval(typingTimer);
+      // Show only trigonometry worksheet
+      setTimeout(() => {
+        ['ws-row-0','ws-row-1','ws-row-2'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) { el.classList.remove('show'); el.classList.add('hidden'); }
+        });
+        const trig = document.getElementById('ws-row-trig');
+        if (trig) {
+          trig.classList.remove('hidden');
+          void trig.offsetWidth;
+          trig.classList.add('show');
+        }
+      }, 300);
+    }
+  }, 75);
+}
+
+function resetSearch() {
+  searchFocused = false;
+  trigFiltered = false;
+  clearInterval(typingTimer);
+  const inp = document.getElementById('wsSearch');
+  if (inp) { inp.value = ''; inp.classList.remove('typing'); }
+  ['ws-row-0','ws-row-1','ws-row-2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.remove('hidden'); el.classList.add('show'); }
+  });
+  const trig = document.getElementById('ws-row-trig');
+  if (trig) { trig.classList.add('hidden'); trig.classList.remove('show'); }
+}
+
+// ── Motion blur (velocity based — subtle) ──
+let prevScrollY = 0;
+let blurClearTimer = null;
+
+function applyMotionBlur(velocity) {
+  if (!scMockWrap) return;
+  // Gentle blur: max 1.5px, only kicks in above velocity 8px/frame
+  const blur = Math.min(Math.max(0, (velocity - 8) * 0.018), 1.5);
+  if (blur < 0.15) {
+    // Fade out any existing blur
+    clearTimeout(blurClearTimer);
+    blurClearTimer = setTimeout(() => {
+      scMockWrap.style.transition = 'filter 0.4s ease';
+      scMockWrap.style.filter = 'blur(0px)';
+    }, 30);
+    return;
+  }
+  scMockWrap.style.transition = 'filter 0s';
+  scMockWrap.style.filter = `blur(${blur.toFixed(2)}px)`;
+  clearTimeout(blurClearTimer);
+  blurClearTimer = setTimeout(() => {
+    scMockWrap.style.transition = 'filter 0.5s ease';
+    scMockWrap.style.filter = 'blur(0px)';
+  }, 50);
+}
+
+// ── Main scroll handler ──
+let scheduledKF = -1;
+let kfTimer = null;
+
+function handleShowcase() {
+  if (!showcase) return;
+  const rect = showcase.getBoundingClientRect();
+  const scrolled = -rect.top;
+  const total = showcase.offsetHeight - window.innerHeight;
+  if (scrolled < 0 || scrolled > total) return;
+
+  const p = Math.max(0, Math.min(1, scrolled / total));
+  const { s, tx, ty, kfIndex } = getTransform(p);
+
+  // Apply transform (direct — scroll is the animation driver)
+  scMockWrap.style.transition = 'none';
+  scMockWrap.style.transform  = `scale(${s.toFixed(4)}) translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%)`;
+
+  // Velocity-based motion blur
+  const velocity = Math.abs(window.scrollY - prevScrollY);
+  applyMotionBlur(velocity);
+
+  // Keyframe switch (debounced slightly to avoid rapid fires)
+  if (kfIndex !== currentKF) {
+    currentKF = kfIndex;
+    const kf = KF[kfIndex];
+
+    // Update URL bar
+    if (bmUrl) bmUrl.textContent = kf.url;
+
+    // Title visibility
+    scTitle.style.opacity = kf.title ? '1' : '0';
+    scTitle.style.pointerEvents = kf.title ? 'auto' : 'none';
+
+    // Screen change (with scan line if screen differs from last)
+    clearTimeout(kfTimer);
+    kfTimer = setTimeout(() => {
+      const prevScr = kfIndex > 0 ? KF[kfIndex - 1].scr : -1;
+      if (kf.scr !== prevScr) {
+        triggerScan();
+        setTimeout(() => setScreen(kf.scr, kf.nav), 240);
+      } else {
+        setScreen(kf.scr, kf.nav);
+      }
+
+      // Pins
+      setPins(kf.pins || []);
+
+      // Step dot
+      setStepDot(kfIndex);
+
+      // Screen-specific animations
+      if (kf.scr === 0 && kfIndex <= 2) animateChart();
+      if (kf.scr === 1) {
+        // Reset search when first entering worksheets
+        if (kfIndex === 3) { resetSearch(); setTimeout(animateWorksheets, 300); }
+        if (kf.searchFocus) doSearchFocus();
+        if (kf.typeSearch)  doTypeTrigonometry();
+      }
+      if (kf.scr === 3) animateResults();
+    }, 80);
+  }
+}
+
+// ── Smooth scroll to a specific scroll position ──
+let smoothScrollRaf = null;
+
+function smoothScrollTo(target, duration) {
+  cancelAnimationFrame(smoothScrollRaf);
+  const start = window.scrollY;
+  const diff  = target - start;
+  if (Math.abs(diff) < 2) return;
+  const startTime = performance.now();
+  function step(now) {
+    const t = Math.min((now - startTime) / duration, 1);
+    // Ease in-out cubic
+    const e = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+    window.scrollTo(0, start + diff * e);
+    if (t < 1) smoothScrollRaf = requestAnimationFrame(step);
+  }
+  smoothScrollRaf = requestAnimationFrame(step);
+}
+
+function scrollToKF(kfIndex) {
+  if (!showcase) return;
+  const total  = showcase.offsetHeight - window.innerHeight;
+  const target = showcase.offsetTop + KF_AT[kfIndex] * total;
+  smoothScrollTo(target, 820);
+}
+
+// ── Keyboard navigation (↓ / → / Space = next KF, ↑ / ← = prev KF) ──
+let keyNavCooldown = false;
+
+document.addEventListener('keydown', (e) => {
+  // Only intercept when showcase is in or near viewport
+  if (!showcase) return;
+  const rect = showcase.getBoundingClientRect();
+  if (rect.bottom < -100 || rect.top > window.innerHeight + 100) return;
+
+  const isNext = ['ArrowDown','ArrowRight',' '].includes(e.key);
+  const isPrev = ['ArrowUp','ArrowLeft'].includes(e.key);
+  if (!isNext && !isPrev) return;
+  e.preventDefault();
+  if (keyNavCooldown) return;
+  keyNavCooldown = true;
+
+  const target = isNext
+    ? Math.min(currentKF + 1, KF.length - 1)
+    : Math.max(currentKF - 1, 0);
+  scrollToKF(target);
+
+  // Cooldown matches animation duration so hold-down advances at one KF/sec
+  setTimeout(() => { keyNavCooldown = false; }, 900);
+});
+
+// ── Scroll event ──
+window.addEventListener('scroll', () => {
+  const scrollBar = document.getElementById('scroll-progress');
+  const s = window.scrollY;
+  const t = document.body.scrollHeight - window.innerHeight;
+  if (scrollBar) scrollBar.style.height = (s / t * 100) + '%';
+
+  // Nav scroll state
+  const mainNav = document.querySelector('nav');
+  if (mainNav) mainNav.classList.toggle('scrolled', s > 40);
+
+  handleShowcase();
+  prevScrollY = s;
+}, { passive: true });
+
+// ── Init ──
+(function () {
+  animateChart();
+  setPins(['pin-portal']);
+  scTitle.style.opacity = '1';
+  handleShowcase();
+
+  // Magnetic buttons
+  document.querySelectorAll('.btn-magnetic').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      btn.style.transform = `translate(${(e.clientX-r.left-r.width/2)*.18}px,${(e.clientY-r.top-r.height/2)*.18}px)`;
+    });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+  });
+})();
+</script>
+</body>
+</html>
