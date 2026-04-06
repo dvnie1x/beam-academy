@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -10,9 +10,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --p: #7C3AED;
-    --p2: #A855F7;
-    --p3: #C084FC;
+    --p: #8B74CC;
+    --p2: #B08FDE;
+    --p3: #CAAFE8;
     --p-soft: #F3EEFF;
     --p-mid: #EDE9F8;
     --bg: #FDFCFF;
@@ -80,7 +80,7 @@
   .beam-icon {
     width: 30px; height: 30px;
     border-radius: 8px;
-    background: linear-gradient(135deg, #7C3AED, #A855F7);
+    background: linear-gradient(135deg, #8B74CC, #B08FDE);
     display: flex; align-items: center; justify-content: center;
     color: white;
     font-family: 'Bricolage Grotesque', sans-serif;
@@ -109,13 +109,13 @@
     color: white !important;
     padding: 9px 22px !important;
     border-radius: 8px !important;
-    box-shadow: 0 4px 14px rgba(124,58,237,.3);
+    box-shadow: 0 4px 14px rgba(139,116,204,.22);
     font-weight: 600 !important;
   }
   .nav-cta:hover {
-    background: #6D28D9 !important;
+    background: #7B64BC !important;
     transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(124,58,237,.4) !important;
+    box-shadow: 0 8px 24px rgba(139,116,204,.3) !important;
   }
 
   /* BUTTONS */
@@ -134,7 +134,7 @@
     transition: transform .2s, box-shadow .2s, background .2s;
   }
   .btn-p {
-    background: var(--p);
+    background: #7C3AED;
     color: white;
     box-shadow: 0 4px 18px rgba(124,58,237,.3);
   }
@@ -225,9 +225,9 @@
     inset: 0;
     background:
       linear-gradient(to top,
-        rgba(80,10,160,0.95) 0%,
-        rgba(80,10,160,0.75) 28%,
-        rgba(60,8,120,0.35) 55%,
+        rgba(65,40,138,0.95) 0%,
+        rgba(65,40,138,0.75) 28%,
+        rgba(50,32,108,0.35) 55%,
         rgba(13,5,32,0.05) 100%
       );
   }
@@ -442,10 +442,25 @@
   }
   .why-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 14px 40px rgba(124,58,237,.13);
-    border-color: rgba(124,58,237,.4);
+    box-shadow: 0 14px 40px rgba(139,116,204,.1);
+    border-color: rgba(139,116,204,.3);
   }
   .why-card:hover::after { width: 100%; }
+
+  /* Per-card accent colours — themed to each card's content */
+  .why-track .why-card:nth-child(1) { border-top: 3px solid #D97706; }
+  .why-track .why-card:nth-child(1) .why-card-num { color: #FEF3C7; }
+  .why-track .why-card:nth-child(2) { border-top: 3px solid #2563EB; }
+  .why-track .why-card:nth-child(2) .why-card-num { color: #DBEAFE; }
+  .why-track .why-card:nth-child(3) { border-top: 3px solid #059669; }
+  .why-track .why-card:nth-child(3) .why-card-num { color: #D1FAE5; }
+  .why-track .why-card:nth-child(4) { border-top: 3px solid #4F46E5; }
+  .why-track .why-card:nth-child(4) .why-card-num { color: #E0E7FF; }
+  .why-track .why-card:nth-child(5) { border-top: 3px solid #E11D48; }
+  .why-track .why-card:nth-child(5) .why-card-num { color: #FFE4E6; }
+  .why-track .why-card:nth-child(6) { border-top: 3px solid #0891B2; }
+  .why-track .why-card:nth-child(6) .why-card-num { color: #CFFAFE; }
+
   .why-card-num {
     font-family: var(--font-head);
     font-size: 3.5rem;
@@ -536,7 +551,7 @@
 
   /* ═══ GRADE TRANSFORMATION ═══ */
   #grade-transform {
-    background: linear-gradient(135deg, #4C1D95, #7C3AED, #9333EA);
+    background: linear-gradient(135deg, #493090, #8B74CC, #8E6BC8);
     color: white;
     padding: 96px 48px;
   }
@@ -784,7 +799,7 @@
     transition: transform .3s, box-shadow .3s;
     position: relative; z-index: 1;
   }
-  .step-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(124,58,237,.13); }
+  .step-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(139,116,204,.1); }
   .step-num {
     width: 56px; height: 56px;
     background: linear-gradient(135deg, var(--p), var(--p2));
@@ -935,7 +950,13 @@
     font-weight: 500;
     color: var(--text2);
     box-shadow: 0 2px 10px rgba(0,0,0,.05);
-    margin-bottom: 40px;
+  }
+  .bhhs-pill::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8B74CC, #B08FDE);
+    flex-shrink: 0;
   }
   .tutors-grid {
     display: grid;
@@ -1029,8 +1050,14 @@
     flex-direction: column;
     justify-content: space-between;
   }
+
+  /* Per-subject accent colours */
+  .flip-card:nth-child(1) .flip-front { border-top: 3px solid #2563EB; box-shadow: 0 4px 20px rgba(37,99,235,.08); }
+  .flip-card:nth-child(2) .flip-front { border-top: 3px solid #059669; box-shadow: 0 4px 20px rgba(5,150,105,.08); }
+  .flip-card:nth-child(3) .flip-front { border-top: 3px solid #D97706; box-shadow: 0 4px 20px rgba(217,119,6,.08); }
+  .flip-card:nth-child(4) .flip-front { border-top: 3px solid #E11D48; box-shadow: 0 4px 20px rgba(225,29,72,.08); }
   .flip-back {
-    background: linear-gradient(135deg, #5B21B6, #7C3AED, #9333EA);
+    background: linear-gradient(135deg, #5540A8, #8B74CC, #8E6BC8);
     color: white;
     transform: rotateY(180deg);
     overflow: auto;
@@ -1144,7 +1171,7 @@
     width: 10px; height: 10px;
     border-radius: 50%;
     background: rgba(124,58,237,.2);
-    border: 2px solid rgba(124,58,237,.3);
+    border: 2px solid rgba(139,116,204,.22);
     transition: background .3s, transform .3s;
     cursor: pointer;
   }
@@ -1321,13 +1348,13 @@
     transition: transform .3s, box-shadow .3s;
     position: relative;
   }
-  .price-card:hover { transform: translateY(-5px); box-shadow: 0 14px 40px rgba(124,58,237,.13); }
+  .price-card:hover { transform: translateY(-5px); box-shadow: 0 14px 40px rgba(139,116,204,.1); }
   .price-card.featured {
-    background: linear-gradient(135deg, #5B21B6, #7C3AED);
+    background: linear-gradient(135deg, #5540A8, #8B74CC);
     border-color: transparent;
     color: white;
     transform: scale(1.04);
-    box-shadow: 0 20px 60px rgba(124,58,237,.3);
+    box-shadow: 0 20px 60px rgba(139,116,204,.22);
   }
   .price-card.featured:hover { transform: scale(1.04) translateY(-5px); }
   .price-badge {
@@ -1421,7 +1448,7 @@
 
   /* ═══ CTA FORM ═══ */
   #cta {
-    background: linear-gradient(135deg, #4C1D95, #7C3AED, #9333EA);
+    background: linear-gradient(135deg, #493090, #8B74CC, #8E6BC8);
     padding: 96px 48px;
   }
   .cta-grid {
@@ -1445,6 +1472,16 @@
   .cta-left > p { color: rgba(255,255,255,.75); font-size: .95rem; line-height: 1.7; margin-bottom: 28px; }
   .cta-contact { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
   .cta-contact li { display: flex; align-items: center; gap: 10px; font-size: .88rem; color: rgba(255,255,255,.8); }
+  .cta-contact li::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .cta-contact li:nth-child(1)::before { background: #F59E0B; }
+  .cta-contact li:nth-child(2)::before { background: #34D399; }
+  .cta-contact li:nth-child(3)::before { background: #60A5FA; }
   .cta-contact a { color: rgba(255,255,255,.85); text-decoration: none; }
   .cta-contact a:hover { color: white; text-decoration: underline; }
   .cta-socials { display: flex; gap: 10px; margin-bottom: 28px; }
@@ -1463,6 +1500,8 @@
     transition: background .2s;
   }
   .cta-social-btn:hover { background: rgba(255,255,255,.25); }
+  .cta-socials a:first-child { border-left: 2px solid #E1306C; }
+  .cta-socials a:last-child { border-left: 2px solid #5865F2; }
   .cta-trust { display: flex; flex-wrap: wrap; gap: 10px; }
   .cta-trust-badge {
     background: rgba(255,255,255,.12);
@@ -1516,7 +1555,7 @@
     outline: none;
     transition: border-color .2s, box-shadow .2s;
   }
-  .wstep input:focus { border-color: var(--p); box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+  .wstep input:focus { border-color: var(--p); box-shadow: 0 0 0 3px rgba(139,116,204,.08); }
   .pill-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -1563,9 +1602,9 @@
     cursor: pointer;
     font-family: var(--font-body);
     transition: background .2s, transform .2s, box-shadow .2s;
-    box-shadow: 0 4px 14px rgba(124,58,237,.3);
+    box-shadow: 0 4px 14px rgba(139,116,204,.22);
   }
-  .btn-form-next:hover { background: #6D28D9; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,58,237,.4); }
+  .btn-form-next:hover { background: #7B64BC; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(139,116,204,.3); }
   .form-error { font-size: .8rem; color: #EF4444; margin-top: 6px; min-height: 18px; }
   /* Step 6 */
   .step6-inner { text-align: center; padding: 12px 0; }
@@ -1594,16 +1633,18 @@
   .footer-desc { font-size: .83rem; color: rgba(255,255,255,.5); line-height: 1.65; max-width: 260px; }
   .footer-socials { display: flex; gap: 10px; }
   .footer-social {
-    width: 34px; height: 34px;
+    padding: 6px 14px;
     border-radius: 8px;
     background: rgba(255,255,255,.08);
     border: 1px solid rgba(255,255,255,.1);
-    display: flex; align-items: center; justify-content: center;
+    display: inline-flex; align-items: center;
     color: rgba(255,255,255,.6);
-    text-decoration: none; font-size: .8rem;
-    transition: background .2s, color .2s;
+    text-decoration: none; font-size: .78rem; font-weight: 500;
+    transition: background .2s, color .2s, border-color .2s;
   }
-  .footer-social:hover { background: var(--p); color: white; }
+  .footer-socials a:first-child { border-left: 2px solid #E1306C; }
+  .footer-socials a:last-child { border-left: 2px solid #5865F2; }
+  .footer-social:hover { background: rgba(255,255,255,.14); color: white; }
   .footer-col h4 {
     font-family: var(--font-head);
     font-size: .82rem; font-weight: 700;
@@ -1824,26 +1865,26 @@
 <!-- TICKER -->
 <div id="ticker">
   <div class="ticker-track">
-    <span class="ticker-item">📍 Suite 206, 2 Pembroke St — Epping NSW 2121</span>
-    <span class="ticker-item">🎓 All tutors scored 95%+ in their HSC subjects</span>
-    <span class="ticker-item">⭐ 5.0 Google Rating from real parents</span>
-    <span class="ticker-item">📊 Topic-by-topic tracking — not just an overall percentage</span>
-    <span class="ticker-item">💬 Private Discord channel — questions answered within the hour</span>
-    <span class="ticker-item">📋 4 personalised documents from your very first free lesson</span>
-    <span class="ticker-item">🏫 All tutors: Baulkham Hills High School graduates</span>
-    <span class="ticker-item">📐 Years 7–12 · Maths · English · Chemistry · Physics</span>
-    <span class="ticker-item">🔬 Now studying Medicine, Law &amp; Optometry at top universities</span>
-    <span class="ticker-item">🎯 Custom worksheets targeting your exact diagnostic gaps</span>
-    <span class="ticker-item">📍 Suite 206, 2 Pembroke St — Epping NSW 2121</span>
-    <span class="ticker-item">🎓 All tutors scored 95%+ in their HSC subjects</span>
-    <span class="ticker-item">⭐ 5.0 Google Rating from real parents</span>
-    <span class="ticker-item">📊 Topic-by-topic tracking — not just an overall percentage</span>
-    <span class="ticker-item">💬 Private Discord channel — questions answered within the hour</span>
-    <span class="ticker-item">📋 4 personalised documents from your very first free lesson</span>
-    <span class="ticker-item">🏫 All tutors: Baulkham Hills High School graduates</span>
-    <span class="ticker-item">📐 Years 7–12 · Maths · English · Chemistry · Physics</span>
-    <span class="ticker-item">🔬 Now studying Medicine, Law &amp; Optometry at top universities</span>
-    <span class="ticker-item">🎯 Custom worksheets targeting your exact diagnostic gaps</span>
+    <span class="ticker-item">Suite 206, 2 Pembroke St — Epping NSW 2121</span>
+    <span class="ticker-item">All tutors scored 95%+ in their HSC subjects</span>
+    <span class="ticker-item">5.0 Google Rating from real parents</span>
+    <span class="ticker-item">Topic-by-topic tracking — not just an overall percentage</span>
+    <span class="ticker-item">Private Discord channel — questions answered within the hour</span>
+    <span class="ticker-item">4 personalised documents from your very first free lesson</span>
+    <span class="ticker-item">All tutors: Baulkham Hills High School graduates</span>
+    <span class="ticker-item">Years 7–12 · Maths · English · Chemistry · Physics</span>
+    <span class="ticker-item">Now studying Medicine, Law &amp; Optometry at top universities</span>
+    <span class="ticker-item">Custom worksheets targeting your exact diagnostic gaps</span>
+    <span class="ticker-item">Suite 206, 2 Pembroke St — Epping NSW 2121</span>
+    <span class="ticker-item">All tutors scored 95%+ in their HSC subjects</span>
+    <span class="ticker-item">5.0 Google Rating from real parents</span>
+    <span class="ticker-item">Topic-by-topic tracking — not just an overall percentage</span>
+    <span class="ticker-item">Private Discord channel — questions answered within the hour</span>
+    <span class="ticker-item">4 personalised documents from your very first free lesson</span>
+    <span class="ticker-item">All tutors: Baulkham Hills High School graduates</span>
+    <span class="ticker-item">Years 7–12 · Maths · English · Chemistry · Physics</span>
+    <span class="ticker-item">Now studying Medicine, Law &amp; Optometry at top universities</span>
+    <span class="ticker-item">Custom worksheets targeting your exact diagnostic gaps</span>
   </div>
 </div>
 
@@ -1860,42 +1901,42 @@
         <div class="why-track">
           <div class="why-card">
             <div class="why-card-num">01</div>
-            <div class="why-icon">🎓</div>
+            
             <h3>We've sat the exact same exams.</h3>
             <p class="why-tagline">Tutors who've been in your child's shoes.</p>
             <p>Every BEAM tutor is a Baulkham Hills High School graduate who scored 95%+ in their HSC subjects. They've sat the exact same exams your child is preparing for, felt the pressure, and come out the other side. They know exactly what markers reward, what trips students up, and what most tutoring centres never tell you.</p>
           </div>
           <div class="why-card">
             <div class="why-card-num">02</div>
-            <div class="why-icon">📊</div>
+            
             <h3>No more 'doing fine'.</h3>
             <p class="why-tagline">Feedback that actually means something.</p>
             <p>We don't give parents generic progress reports. You get a live dashboard showing your child's exact score by topic, week by week. Not "78% overall" but Algebra at 92%, Calculus at 64%, and exactly which sub-topics need work next. Specific enough to act on immediately.</p>
           </div>
           <div class="why-card">
             <div class="why-card-num">03</div>
-            <div class="why-icon">🎯</div>
+            
             <h3>Practice that targets the gaps.</h3>
             <p class="why-tagline">Custom worksheets, every single session.</p>
             <p>Every worksheet is built from your child's diagnostic data, not pulled from a standard set everyone gets. They practise exactly what they're weak on, not what they've already mastered. Every minute of homework directly moves the needle on their marks.</p>
           </div>
           <div class="why-card">
             <div class="why-card-num">04</div>
-            <div class="why-icon">💬</div>
+            
             <h3>Help at 9pm. Not next Tuesday.</h3>
             <p class="why-tagline">Your own private Discord channel.</p>
             <p>Every BEAM student gets their own private Discord channel, not a shared group chat where questions get lost. Drop a photo of your working or ask a concept question any time. A tutor responds directly to you, usually within the hour, always before the next morning.</p>
           </div>
           <div class="why-card">
             <div class="why-card-num">05</div>
-            <div class="why-icon">📋</div>
+            
             <h3>A diagnostic worth keeping.</h3>
             <p class="why-tagline">4 personalised documents from day one.</p>
             <p>Your free trial produces a full progress report, custom targeted worksheet, answer key, and worked solutions. All yours permanently, even if you decide not to continue. No other tutoring centre offers this. It's a commitment to earning your trust before your money.</p>
           </div>
           <div class="why-card">
             <div class="why-card-num">06</div>
-            <div class="why-icon">🏫</div>
+            
             <h3>Real sessions. Not just small ones.</h3>
             <p class="why-tagline">Tutors who know every student by name.</p>
             <p>Our sessions run small enough that every tutor knows every student's name, progress, and weak spots before the lesson starts. There's no slipping through the cracks. When something improves, we notice. When it doesn't, we adapt before the next session, not at the next parent-teacher meeting.</p>
@@ -1999,7 +2040,7 @@
         </span></div>
         <p class="review-quote">"Honestly the best tutoring experience I've had. The tutors actually remember who you are and what you're working on. You never feel like just another student."</p>
         <div class="review-author">
-          <div class="review-avatar" style="background:#7C3AED">E</div>
+          <div class="review-avatar" style="background:#8B74CC">E</div>
           <div><div class="review-name">Ethan T.</div><div class="review-school">BHHS Class of 2028</div></div>
         </div>
       </div>
@@ -2069,7 +2110,7 @@
         </span></div>
         <p class="review-quote">"My daughter used to dread tutoring. Now she actually asks to go. Whatever they're doing differently, it's working. Couldn't be happier with how she's taken to it."</p>
         <div class="review-author">
-          <div class="review-avatar" style="background:#7C3AED">P</div>
+          <div class="review-avatar" style="background:#8B74CC">P</div>
           <div><div class="review-name">Parent</div><div class="review-school">Castle Hill</div></div>
         </div>
       </div>
@@ -2098,7 +2139,7 @@
         </span></div>
         <p class="review-quote">"Honestly the best tutoring experience I've had. The tutors actually remember who you are and what you're working on. You never feel like just another student."</p>
         <div class="review-author">
-          <div class="review-avatar" style="background:#7C3AED">E</div>
+          <div class="review-avatar" style="background:#8B74CC">E</div>
           <div><div class="review-name">Ethan T.</div><div class="review-school">BHHS Class of 2028</div></div>
         </div>
       </div>
@@ -2168,7 +2209,7 @@
         </span></div>
         <p class="review-quote">"My daughter used to dread tutoring. Now she actually asks to go. Whatever they're doing differently, it's working. Couldn't be happier with how she's taken to it."</p>
         <div class="review-author">
-          <div class="review-avatar" style="background:#7C3AED">P</div>
+          <div class="review-avatar" style="background:#8B74CC">P</div>
           <div><div class="review-name">Parent</div><div class="review-school">Castle Hill</div></div>
         </div>
       </div>
@@ -2310,7 +2351,7 @@
           </div>
         </div>
         <div class="mock-content">
-          <div class="mock-greeting">Good morning, Alex! 🌟</div>
+          <div class="mock-greeting">Good morning, Alex.</div>
           <div class="mock-chips">
             <div class="mock-chip">2 pending</div>
             <div class="mock-chip">3 complete</div>
@@ -2413,7 +2454,7 @@
       <p class="section-sub">Every BEAM tutor has sat the exact same exams your child is preparing for. They've used the same textbooks, felt the exam pressure, and know precisely what most tutoring centres never teach. They've also seen what ineffective tutoring looks like, which is exactly why they built BEAM to be different.</p>
     </div>
     <div class="text-center rv" style="margin-top:28px">
-      <div class="bhhs-pill">🏫 All Baulkham Hills High School Graduates · Medicine, Law &amp; Optometry at top Australian universities</div>
+      <div class="bhhs-pill">All Baulkham Hills High School Graduates · Medicine, Law &amp; Optometry at top Australian universities</div>
     </div>
     <div class="tutors-grid">
       <div class="tutor-card rv rv-d1">
@@ -2500,7 +2541,7 @@
         <div class="flip-inner">
           <div class="flip-front">
             <div>
-              <div class="flip-subject-icon">📐</div>
+              
               <div class="flip-subject-name">Mathematics</div>
               <div class="flip-year">Yr 7–12 · Adv · Ext1 · Ext2</div>
             </div>
@@ -2522,7 +2563,7 @@
         <div class="flip-inner">
           <div class="flip-front">
             <div>
-              <div class="flip-subject-icon">📝</div>
+              
               <div class="flip-subject-name">English</div>
               <div class="flip-year">Yr 7–12 · Adv · Ext1 · Ext2</div>
             </div>
@@ -2544,7 +2585,7 @@
         <div class="flip-inner">
           <div class="flip-front">
             <div>
-              <div class="flip-subject-icon">🧪</div>
+              
               <div class="flip-subject-name">Chemistry</div>
               <div class="flip-year">Yr 9–12</div>
             </div>
@@ -2566,7 +2607,7 @@
         <div class="flip-inner">
           <div class="flip-front">
             <div>
-              <div class="flip-subject-icon">⚡</div>
+              
               <div class="flip-subject-name">Physics</div>
               <div class="flip-year">Yr 9–12</div>
             </div>
@@ -2938,13 +2979,13 @@
       <h2>Your first lesson is completely free.</h2>
       <p>No payment, no obligation. Keep all 4 diagnostic documents either way. We'll be in touch within 24 hours to find a time that works.</p>
       <ul class="cta-contact">
-        <li>📍 Suite 206, 2 Pembroke St, Epping NSW 2121</li>
-        <li>📞 <a href="tel:0491791447">0491 791 447</a></li>
-        <li>✉️ <a href="mailto:admin@beamacademy.info">admin@beamacademy.info</a></li>
+        <li>Suite 206, 2 Pembroke St, Epping NSW 2121</li>
+        <li><a href="tel:0491791447">0491 791 447</a></li>
+        <li><a href="mailto:admin@beamacademy.info">admin@beamacademy.info</a></li>
       </ul>
       <div class="cta-socials">
-        <a href="https://www.instagram.com/beamacademyhsc" target="_blank" class="cta-social-btn">📷 Instagram</a>
-        <a href="https://discord.gg/Y4Y8uTun" target="_blank" class="cta-social-btn">💬 Discord</a>
+        <a href="https://www.instagram.com/beamacademyhsc" target="_blank" class="cta-social-btn">Instagram</a>
+        <a href="https://discord.gg/Y4Y8uTun" target="_blank" class="cta-social-btn">Discord</a>
       </div>
       <div class="cta-trust">
         <span class="cta-trust-badge">5.0 ★ Google Rating</span>
@@ -3029,11 +3070,11 @@
         <div class="wstep" id="wstep-6">
           <div class="step6-inner">
             <svg viewBox="0 0 80 80" width="80" height="80" class="step6-check">
-              <circle cx="40" cy="40" r="36" fill="none" stroke="#E9D5FF" stroke-width="4"/>
-              <circle cx="40" cy="40" r="36" fill="none" stroke="#7C3AED" stroke-width="4"
+              <circle cx="40" cy="40" r="36" fill="none" stroke="#EAE0F8" stroke-width="4"/>
+              <circle cx="40" cy="40" r="36" fill="none" stroke="#8B74CC" stroke-width="4"
                 stroke-dasharray="226" stroke-dashoffset="226" id="checkCircle"
                 stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:40px 40px"/>
-              <path d="M24 40 L36 52 L56 28" fill="none" stroke="#7C3AED" stroke-width="4"
+              <path d="M24 40 L36 52 L56 28" fill="none" stroke="#8B74CC" stroke-width="4"
                 stroke-linecap="round" stroke-linejoin="round"
                 stroke-dasharray="50" stroke-dashoffset="50" id="checkTick"/>
             </svg>
@@ -3057,8 +3098,8 @@
       </a>
       <p class="footer-desc">Expert HSC tutoring in Epping, Sydney. Built by BHHS graduates. Years 7–12 Maths, English, Chemistry, Physics.</p>
       <div class="footer-socials">
-        <a href="https://www.instagram.com/beamacademyhsc" target="_blank" class="footer-social">📷</a>
-        <a href="https://discord.gg/Y4Y8uTun" target="_blank" class="footer-social">💬</a>
+        <a href="https://www.instagram.com/beamacademyhsc" target="_blank" class="footer-social">Instagram</a>
+        <a href="https://discord.gg/Y4Y8uTun" target="_blank" class="footer-social">Discord</a>
       </div>
     </div>
     <div class="footer-col">
@@ -3197,11 +3238,11 @@
   <div class="wstep" id="tp-wstep-6">
     <div class="step6-inner">
       <svg viewBox="0 0 80 80" width="80" height="80" class="step6-check">
-        <circle cx="40" cy="40" r="36" fill="none" stroke="#E9D5FF" stroke-width="4"/>
-        <circle cx="40" cy="40" r="36" fill="none" stroke="#7C3AED" stroke-width="4"
+        <circle cx="40" cy="40" r="36" fill="none" stroke="#EAE0F8" stroke-width="4"/>
+        <circle cx="40" cy="40" r="36" fill="none" stroke="#8B74CC" stroke-width="4"
           stroke-dasharray="226" stroke-dashoffset="226" id="tp-checkCircle"
           stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:40px 40px"/>
-        <path d="M24 40 L36 52 L56 28" fill="none" stroke="#7C3AED" stroke-width="4"
+        <path d="M24 40 L36 52 L56 28" fill="none" stroke="#8B74CC" stroke-width="4"
           stroke-linecap="round" stroke-linejoin="round"
           stroke-dasharray="50" stroke-dashoffset="50" id="tp-checkTick"/>
       </svg>
