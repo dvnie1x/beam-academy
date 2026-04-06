@@ -601,6 +601,19 @@ footer { background: #1E1035; padding: 64px 48px 0; }
 .footer-contact-item { font-size: .8rem; color: rgba(255,255,255,.4); line-height: 1.45; }
 .footer-contact-item a { color: rgba(255,255,255,.45); text-decoration: none; }
 .footer-contact-item a:hover { color: white; }
+.footer-credit {
+  margin-left: 10px;
+  padding-left: 16px;
+  border-left: 1px solid rgba(255,255,255,.1);
+}
+.footer-credit a {
+  display: inline-flex; align-items: center; gap: 5px;
+  color: rgba(255,255,255,.2);
+  text-decoration: none;
+  transition: color .2s;
+}
+.footer-credit a:hover { color: rgba(255,255,255,.45); }
+
 .footer-bottom {
   max-width: 1160px; margin: 0 auto; padding: 20px 0;
   display: flex; align-items: center; justify-content: space-between;
@@ -1079,10 +1092,11 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2025 BEAM Academy. All rights reserved.</span>
+    <span>© 2025/26 BEAM Academy. All rights reserved.</span>
     <div class="footer-bottom-links">
       <a href="#">Privacy Policy</a>
       <a href="#">Terms &amp; Conditions</a>
+      <span class="footer-credit"><a href="mailto:gargdaniel07@gmail.com"><svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor" style="flex-shrink:0"><path d="M5 0L6.18 3.82 10 5 6.18 6.18 5 10 3.82 6.18 0 5 3.82 3.82Z"/></svg> Site by Daniel Garg</a></span>
     </div>
   </div>
 </footer>
