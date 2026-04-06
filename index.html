@@ -1715,6 +1715,53 @@
 
   #pw { transition: transform .45s cubic-bezier(.4,0,.2,1); }
   body.trial-open #pw { transform: translateX(-160px); }
+
+  /* ═══ LEGAL MODALS ═══ */
+  #legal-backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.45); backdrop-filter: blur(4px);
+    z-index: 1100;
+  }
+  #legal-backdrop.open { display: block; }
+  #legal-modal {
+    display: none; position: fixed;
+    top: 50%; left: 50%; transform: translate(-50%, -52%);
+    width: min(640px, 92vw); max-height: 82vh;
+    background: white; border-radius: 20px;
+    padding: 48px 48px 40px; overflow-y: auto;
+    z-index: 1101; box-shadow: 0 24px 80px rgba(0,0,0,.18);
+    transition: opacity .25s, transform .25s;
+  }
+  #legal-modal.open {
+    display: block; animation: legalIn .25s ease forwards;
+  }
+  @keyframes legalIn {
+    from { opacity: 0; transform: translate(-50%, -48%); }
+    to   { opacity: 1; transform: translate(-50%, -50%); }
+  }
+  .legal-close {
+    position: absolute; top: 16px; right: 20px;
+    background: none; border: none; font-size: 1.5rem;
+    color: var(--text3); cursor: pointer; line-height: 1;
+    padding: 4px 8px; border-radius: 8px;
+    transition: background .15s, color .15s;
+  }
+  .legal-close:hover { background: var(--bg2); color: var(--text); }
+  #legal-content h1 {
+    font-family: var(--font-head); font-size: 1.9rem;
+    font-weight: 800; color: var(--text); margin-bottom: 28px;
+  }
+  #legal-content h2 {
+    font-family: var(--font-head); font-size: 1rem;
+    font-weight: 700; color: var(--text); margin: 24px 0 10px;
+  }
+  #legal-content ul {
+    padding-left: 20px; display: flex; flex-direction: column; gap: 8px;
+    margin-bottom: 8px;
+  }
+  #legal-content li { font-size: .9rem; color: var(--text2); line-height: 1.6; }
+  #legal-content p { font-size: .9rem; color: var(--text2); line-height: 1.6; margin-top: 16px; }
+  #legal-content strong { color: var(--text); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -3050,14 +3097,21 @@
   <div class="footer-bottom">
     <span>© 2025 BEAM Academy. All rights reserved.</span>
     <div class="footer-bottom-links">
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms &amp; Conditions</a>
-      <a href="#">Refund Policy</a>
+      <a href="#" onclick="openLegal('privacy');return false;">Privacy Policy</a>
+      <a href="#" onclick="openLegal('terms');return false;">Terms &amp; Conditions</a>
+      <a href="#" onclick="openLegal('refund');return false;">Refund Policy</a>
     </div>
   </div>
 </footer>
 
 </div><!-- /pw -->
+
+<!-- LEGAL MODALS -->
+<div id="legal-backdrop" onclick="closeLegal()"></div>
+<div id="legal-modal">
+  <button class="legal-close" onclick="closeLegal()" aria-label="Close">&times;</button>
+  <div id="legal-content"></div>
+</div>
 
 <!-- TRIAL PANEL -->
 <div id="trial-backdrop" onclick="closeTrial()"></div>
@@ -3745,6 +3799,84 @@
     }
     waveRaf = requestAnimationFrame(waveTick);
   })();
+
+  // ═══ LEGAL MODALS ═══
+  const LEGAL_CONTENT = {
+    terms: `
+      <h1>Terms &amp; Conditions</h1>
+      <h2>Enrolment</h2>
+      <ul>
+        <li>First lesson is a free trial with no obligation</li>
+        <li>Ongoing enrolment is on a term-by-term basis</li>
+        <li>Fees are payable at the start of each term</li>
+      </ul>
+      <h2>Cancellation</h2>
+      <ul>
+        <li>We require <strong>2 weeks notice</strong> for cancellations</li>
+        <li>Students may switch subjects at any time by notifying us</li>
+      </ul>
+      <h2>Conduct</h2>
+      <ul>
+        <li>Students are expected to arrive on time and prepared for class</li>
+        <li>Respectful behaviour towards tutors and other students is required</li>
+        <li>BEAM Academy reserves the right to discontinue lessons for inappropriate conduct</li>
+      </ul>
+    `,
+    privacy: `
+      <h1>Privacy Policy</h1>
+      <h2>Information We Collect</h2>
+      <ul>
+        <li>Student and parent contact details (name, email, phone)</li>
+        <li>Student academic information for lesson planning</li>
+        <li>Payment information (processed securely via Stripe)</li>
+      </ul>
+      <h2>How We Use Your Information</h2>
+      <ul>
+        <li>To provide tutoring services and communicate about lessons</li>
+        <li>To process payments and send invoices</li>
+        <li>To improve our services and curriculum</li>
+      </ul>
+      <h2>Data Protection</h2>
+      <ul>
+        <li>Your information is stored securely and never sold to third parties</li>
+        <li>We use industry-standard encryption for all sensitive data</li>
+        <li>You may request access to or deletion of your data at any time</li>
+      </ul>
+      <p>For questions about your data, contact us at <strong>admin@beamacademy.info</strong></p>
+    `,
+    refund: `
+      <h1>Refund Policy</h1>
+      <h2>Missed Lessons</h2>
+      <ul>
+        <li>Students can miss up to <strong>2 lessons per term per subject</strong></li>
+        <li>We prefer to arrange a <strong>makeup lesson</strong> where possible</li>
+        <li>Alternatively, missed lessons can be applied as <strong>credit towards the next term</strong></li>
+      </ul>
+      <h2>Catchup Classes</h2>
+      <ul>
+        <li>Catchup lessons (e.g. holiday intensives) are invoiced <strong>separately</strong> from regular term fees</li>
+        <li>Invoice sent once all catchup classes have finished</li>
+      </ul>
+      <h2>Discounts</h2>
+      <ul>
+        <li><strong>5% early bird discount</strong> still applies to students who have received catchup lessons</li>
+        <li><strong>$20 off first term discount</strong> is honoured alongside other promotions</li>
+      </ul>
+    `,
+  };
+
+  function openLegal(type) {
+    document.getElementById('legal-content').innerHTML = LEGAL_CONTENT[type] || '';
+    document.getElementById('legal-backdrop').classList.add('open');
+    document.getElementById('legal-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLegal() {
+    document.getElementById('legal-backdrop').classList.remove('open');
+    document.getElementById('legal-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLegal(); });
 </script>
 </body>
 </html>
