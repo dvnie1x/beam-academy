@@ -1676,6 +1676,16 @@
   .price-tab.active { background: white; color: var(--p); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
   .price-panels > div { display: none; }
   .price-panels > div.active { display: block; }
+  @keyframes priceSlideRight {
+    from { transform: translateX(36px); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+  }
+  @keyframes priceSlideLeft {
+    from { transform: translateX(-36px); opacity: 0; }
+    to   { transform: translateX(0);     opacity: 1; }
+  }
+  .price-panels > div.swipe-right { animation: priceSlideRight .32s cubic-bezier(0.16,1,0.3,1) both; }
+  .price-panels > div.swipe-left  { animation: priceSlideLeft  .32s cubic-bezier(0.16,1,0.3,1) both; }
   .price-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1830,22 +1840,23 @@
   .cta-contact a:hover { color: white; text-decoration: underline; }
   .cta-socials { display: flex; gap: 10px; margin-bottom: 28px; }
   .cta-social-btn {
+    width: 42px; height: 42px;
+    border-radius: 50%;
     display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    background: rgba(255,255,255,.15);
+    align-items: center; justify-content: center;
+    background: rgba(255,255,255,.12);
     color: white;
     border: 1px solid rgba(255,255,255,.25);
     border-radius: 8px;
     padding: 8px 16px;
-    font-size: .82rem;
-    font-weight: 600;
     text-decoration: none;
-    transition: background .2s;
+    transition: background .2s, border-color .2s, transform .15s;
   }
-  .cta-social-btn:hover { background: rgba(255,255,255,.25); }
-  .cta-socials a:first-child { border-left: 2px solid #E1306C; }
-  .cta-socials a:last-child { border-left: 2px solid #5865F2; }
+  .cta-social-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .cta-social-btn:hover { background: rgba(255,255,255,.22); transform: translateY(-2px); }
+  .cta-social-btn:active { transform: scale(.95); }
+  .cta-socials a:first-child { border: 1px solid rgba(225,48,108,.5); }
+  .cta-socials a:last-child  { border: 1px solid rgba(88,101,242,.5); }
   .cta-trust { display: flex; flex-wrap: wrap; gap: 10px; }
   .cta-trust-badge {
     background: rgba(255,255,255,.12);
@@ -1975,20 +1986,22 @@
     color: white; text-decoration: none;
   }
   .footer-desc { font-size: .83rem; color: rgba(255,255,255,.5); line-height: 1.65; max-width: 260px; }
-  .footer-socials { display: flex; gap: 10px; }
+  .footer-socials { display: flex; gap: 10px; margin-top: 4px; }
   .footer-social {
-    padding: 6px 14px;
-    border-radius: 8px;
+    width: 40px; height: 40px;
+    border-radius: 50%;
     background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.1);
-    display: inline-flex; align-items: center;
-    color: rgba(255,255,255,.6);
-    text-decoration: none; font-size: .78rem; font-weight: 500;
-    transition: background .2s, color .2s, border-color .2s;
+    border: 1px solid rgba(255,255,255,.15);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,.65);
+    text-decoration: none;
+    transition: background .2s, color .2s, border-color .2s, transform .15s;
   }
-  .footer-socials a:first-child { border-left: 2px solid #E1306C; }
-  .footer-socials a:last-child { border-left: 2px solid #5865F2; }
-  .footer-social:hover { background: rgba(255,255,255,.14); color: white; }
+  .footer-social svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .footer-social:hover { background: rgba(255,255,255,.16); color: white; border-color: rgba(255,255,255,.3); transform: translateY(-2px); }
+  .footer-social:active { transform: translateY(0) scale(.95); }
+  .footer-socials a:first-child { border-color: rgba(225,48,108,.4); }
+  .footer-socials a:last-child  { border-color: rgba(88,101,242,.4); }
   .footer-col h4 {
     font-family: var(--font-head);
     font-size: .82rem; font-weight: 700;
@@ -2447,7 +2460,7 @@
         <p class="review-quote">"Even coming from Girraween it's 100% worth it. The Discord support means I'm never stuck waiting until the next session. Someone always gets back to me the same night."</p>
         <div class="review-author">
           <div class="review-avatar" style="background:#D97706">N</div>
-          <div><div class="review-name">Neil J.</div><div class="review-school">Girraween HS Class of 2028</div></div>
+          <div><div class="review-name">Neil J.</div><div class="review-school">GHS Class of 2028</div></div>
         </div>
       </div>
       <div class="review-card">
@@ -2490,6 +2503,34 @@
         <div class="review-author">
           <div class="review-avatar" style="background:#059669">P</div>
           <div><div class="review-name">Parent</div><div class="review-school">Cherrybrook</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars"><span class="star-svg-row">
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </span></div>
+        <p class="review-quote">"Felt welcomed from the first session. The tutors genuinely know you as a person, not just a student. It's a really easy environment to actually focus and learn in."</p>
+        <div class="review-author">
+          <div class="review-avatar" style="background:#0891B2">J</div>
+          <div><div class="review-name">Josiah V.</div><div class="review-school">BHHS Class of 2028</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars"><span class="star-svg-row">
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </span></div>
+        <p class="review-quote">"Coming from North Sydney Boys I wasn't sure how it'd go, but BEAM has been genuinely great. My test scores went from the low 70s to consistently hitting the 90s in a single term. The quality of teaching here is on another level."</p>
+        <div class="review-author">
+          <div class="review-avatar" style="background:#EA580C">A</div>
+          <div><div class="review-name">Aarav P.</div><div class="review-school">NSBHS Class of 2028</div></div>
         </div>
       </div>
       <!-- Duplicate for seamless loop -->
@@ -2546,7 +2587,7 @@
         <p class="review-quote">"Even coming from Girraween it's 100% worth it. The Discord support means I'm never stuck waiting until the next session. Someone always gets back to me the same night."</p>
         <div class="review-author">
           <div class="review-avatar" style="background:#D97706">N</div>
-          <div><div class="review-name">Neil J.</div><div class="review-school">Girraween HS Class of 2028</div></div>
+          <div><div class="review-name">Neil J.</div><div class="review-school">GHS Class of 2028</div></div>
         </div>
       </div>
       <div class="review-card">
@@ -2589,6 +2630,34 @@
         <div class="review-author">
           <div class="review-avatar" style="background:#059669">P</div>
           <div><div class="review-name">Parent</div><div class="review-school">Cherrybrook</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars"><span class="star-svg-row">
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </span></div>
+        <p class="review-quote">"Felt welcomed from the first session. The tutors genuinely know you as a person, not just a student. It's a really easy environment to actually focus and learn in."</p>
+        <div class="review-author">
+          <div class="review-avatar" style="background:#0891B2">J</div>
+          <div><div class="review-name">Josiah V.</div><div class="review-school">BHHS Class of 2028</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars"><span class="star-svg-row">
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </span></div>
+        <p class="review-quote">"Coming from North Sydney Boys I wasn't sure how it'd go, but BEAM has been genuinely great. My test scores went from the low 70s to consistently hitting the 90s in a single term. The quality of teaching here is on another level."</p>
+        <div class="review-author">
+          <div class="review-avatar" style="background:#EA580C">A</div>
+          <div><div class="review-name">Aarav P.</div><div class="review-school">NSBHS Class of 2028</div></div>
         </div>
       </div>
     </div>
@@ -2984,33 +3053,33 @@
         <tbody>
           <tr>
             <td>Feedback</td>
-            <td>Generic progress report — "doing well" or "needs improvement"</td>
+            <td>Generic progress report, usually just "doing well" or "needs improvement"</td>
             <td><span class="check">✓</span> Live topic-by-topic dashboard with exact percentages per sub-topic, updated after every session</td>
           </tr>
           <tr>
             <td>Materials</td>
             <td>Pre-made worksheets given to every student in the class</td>
-            <td><span class="check">✓</span> Custom worksheets built from your child's individual diagnostic results — targeting their exact weak spots</td>
+            <td><span class="check">✓</span> Custom worksheets built from each student's diagnostic results, targeting their exact weak spots</td>
           </tr>
           <tr>
             <td>Tracking</td>
-            <td>Overall percentage only — no granular insight into where marks are being lost</td>
-            <td><span class="check">✓</span> Sub-topic tracking across every subject — you always know exactly which topics need work before the next session</td>
+            <td>Overall percentage only, with no insight into where marks are actually being lost</td>
+            <td><span class="check">✓</span> Sub-topic tracking across every subject so you always know what needs work before the next session</td>
           </tr>
           <tr>
             <td>Support</td>
-            <td>Questions answered at the next session — sometimes a week away</td>
-            <td><span class="check">✓</span> Private Discord channel — questions answered within the hour, any night of the week, always before next morning</td>
+            <td>Questions answered at the next session, sometimes a week away</td>
+            <td><span class="check">✓</span> Private Discord channel with questions answered within the hour, any night of the week</td>
           </tr>
           <tr>
             <td>Free Trial</td>
-            <td>Sit-in session with no deliverables — nothing to show for it</td>
-            <td><span class="check">✓</span> Full trial lesson + 4 personalised documents (progress report, worksheet, answer key, worked solutions) — yours to keep regardless</td>
+            <td>Sit-in session with no deliverables and nothing to take away</td>
+            <td><span class="check">✓</span> Full trial lesson plus 4 personalised documents (progress report, worksheet, answer key, worked solutions) that are yours to keep regardless</td>
           </tr>
           <tr>
             <td>Class Size</td>
             <td>Large classes where tutors rarely know individual student progress</td>
-            <td><span class="check">✓</span> Small groups — every tutor knows every student's name, progress, and weak spots before the lesson begins</td>
+            <td><span class="check">✓</span> Small groups where every tutor knows every student's name, progress, and weak spots before the lesson begins</td>
           </tr>
         </tbody>
       </table>
@@ -3557,13 +3626,18 @@
         <li><a href="mailto:admin@beamacademy.info">admin@beamacademy.info</a></li>
       </ul>
       <div class="cta-socials">
-        <a href="https://www.instagram.com/beamacademyhsc" target="_blank" class="cta-social-btn">Instagram</a>
-        <a href="https://discord.gg/Y4Y8uTun" target="_blank" class="cta-social-btn">Discord</a>
-      </div>
-      <div class="cta-trust">
-        <span class="cta-trust-badge">5.0 ★ Google Rating</span>
-        <span class="cta-trust-badge">95% improve in first term</span>
-        <span class="cta-trust-badge">Free lesson guaranteed</span>
+        <a href="https://www.instagram.com/beamacademyhsc" target="_blank" class="cta-social-btn" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r=".6" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
+        <a href="https://discord.gg/Y4Y8uTun" target="_blank" class="cta-social-btn" aria-label="Discord">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+        </a>
       </div>
     </div>
     <div class="rv rv-d2">
@@ -3671,8 +3745,18 @@
       </a>
       <p class="footer-desc">Expert HSC tutoring in Epping, Sydney. Built by BHHS graduates. Years 7–12 Maths, English, Chemistry, Physics.</p>
       <div class="footer-socials">
-        <a href="https://www.instagram.com/beamacademyhsc" target="_blank" class="footer-social">Instagram</a>
-        <a href="https://discord.gg/Y4Y8uTun" target="_blank" class="footer-social">Discord</a>
+        <a href="https://www.instagram.com/beamacademyhsc" target="_blank" class="footer-social" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r=".6" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
+        <a href="https://discord.gg/Y4Y8uTun" target="_blank" class="footer-social" aria-label="Discord">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+        </a>
       </div>
     </div>
     <div class="footer-col">
@@ -4112,10 +4196,20 @@
 
   // ═══ PRICING TABS ═══
   function setTab(id, btn) {
-    document.querySelectorAll('.price-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.price-panels > div').forEach(p => p.classList.remove('active'));
+    const tabs   = [...document.querySelectorAll('.price-tab')];
+    const panels = [...document.querySelectorAll('.price-panels > div')];
+    const fromIdx = tabs.findIndex(t => t.classList.contains('active'));
+    const toIdx   = tabs.indexOf(btn);
+    if (fromIdx === toIdx) return;
+    const swipeClass = toIdx > fromIdx ? 'swipe-right' : 'swipe-left';
+    tabs.forEach(t => t.classList.remove('active'));
+    panels.forEach(p => p.classList.remove('active', 'swipe-right', 'swipe-left'));
     btn.classList.add('active');
-    document.getElementById('tab-' + id).classList.add('active');
+    const next = document.getElementById('tab-' + id);
+    next.classList.add('active');
+    // Force reflow so animation restarts cleanly
+    void next.offsetWidth;
+    next.classList.add(swipeClass);
   }
 
   // ═══ FAQ ACCORDION ═══
