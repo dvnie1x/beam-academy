@@ -43,47 +43,77 @@ body {
 
 /* ═══ NAV ═══ */
 nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  padding: 0 48px; height: 64px;
-  display: flex; align-items: center; justify-content: space-between;
-  transition: background .3s, border-color .3s;
+  position: fixed;
+  top: 16px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex; align-items: center;
+  width: calc(100% - 40px); max-width: 1300px;
+  padding: 8px 8px 8px 20px;
+  border-radius: 100px;
+  background: transparent;
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  border: 1px solid transparent;
+  box-shadow: none;
+  transition: background .35s ease, border-color .35s ease, box-shadow .35s ease, backdrop-filter .35s ease;
+  white-space: nowrap;
 }
 nav.scrolled {
-  background: rgba(255,255,255,.93);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.84);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-color: rgba(255,255,255,.8);
+  box-shadow: 0 4px 36px rgba(139,116,204,.16), inset 0 1px 0 rgba(255,255,255,.95);
 }
+nav:not(.scrolled) .nav-brand { color: rgba(255,255,255,.95); }
+nav:not(.scrolled) .nav-links a { color: rgba(255,255,255,.75); }
+nav:not(.scrolled) .nav-links a:hover { color: white; background: rgba(255,255,255,.12); }
+nav:not(.scrolled) .nav-cta { box-shadow: 0 2px 16px rgba(0,0,0,.25); }
 .nav-brand {
-  display: flex; align-items: center; gap: 4px;
+  display: flex; align-items: center; gap: 7px;
   text-decoration: none; color: var(--text);
-  font-family: var(--font-head); font-weight: 700; font-size: 1rem;
+  font-family: var(--font-head); font-weight: 700; font-size: .9rem;
+  flex-shrink: 0;
+}
+.nav-brand span {
+  line-height: 1; display: block;
+  padding-top: 1px;
 }
 .beam-icon {
-  width: 28px; height: 28px; border-radius: 7px;
+  width: 28px; height: 28px; border-radius: 8px;
   background: linear-gradient(135deg,#8B74CC,#B08FDE);
   display: flex; align-items: center; justify-content: center;
   color: white; font-weight: 800; font-size: .85rem;
   font-family: var(--font-head); flex-shrink: 0;
 }
 .beam-star-logo {
-  width: 40px; height: 40px; object-fit: contain;
-  flex-shrink: 0;
-  margin-right: -6px;
+  width: 36px; height: 36px; object-fit: contain;
+  flex-shrink: 0; display: block;
 }
-.nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+.nav-links {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  gap: 2px; list-style: none;
+}
 .nav-links a {
   color: var(--text2); text-decoration: none;
-  font-size: .85rem; font-weight: 500;
-  padding: 6px 12px; border-radius: 7px;
+  font-size: .875rem; font-weight: 500; line-height: 1;
+  padding: 10px 16px; border-radius: 100px;
   transition: color .2s, background .2s;
 }
-.nav-links a:hover { color: var(--p); background: var(--p-soft); }
+.nav-links a:hover { color: var(--p); background: rgba(139,116,204,.08); }
 .nav-cta {
+  display: inline-flex; align-items: center;
   background: var(--p) !important; color: white !important;
-  padding: 8px 20px !important; border-radius: 8px !important;
-  font-weight: 600 !important;
-  box-shadow: 0 4px 14px rgba(139,116,204,.26);
+  padding: 12px 26px !important; border-radius: 100px !important;
+  box-shadow: 0 2px 12px rgba(139,116,204,.35);
+  font-weight: 600 !important; font-size: .875rem !important; line-height: 1 !important;
+  text-decoration: none; flex-shrink: 0;
+  transition: background .2s, box-shadow .2s, transform .15s;
 }
+.nav-cta:hover {
+  background: #7B64BC !important;
+  box-shadow: 0 4px 20px rgba(139,116,204,.45) !important;
+}
+.nav-cta:active { transform: scale(.96) !important; }
 
 /* ═══ BUTTONS ═══ */
 .btn {
@@ -490,7 +520,7 @@ nav.scrolled {
   border-radius: 12px; padding: 14px 16px;
   box-shadow: 0 8px 32px rgba(0,0,0,.5);
 }
-.sc-pin-icon { font-size: 1.3rem; display: block; margin-bottom: 8px; }
+.sc-pin-icon { display: block; margin-bottom: 10px; width: 20px; height: 20px; color: rgba(255,255,255,.7); }
 .sc-pin-tag {
   font-size: .63rem; font-weight: 700; letter-spacing: .09em;
   text-transform: uppercase; color: var(--p3); display: block; margin-bottom: 5px;
@@ -665,8 +695,8 @@ footer { background: #1E1035; padding: 64px 48px 0; }
 
 /* ═══ RESPONSIVE ═══ */
 @media (max-width: 900px) {
-  nav { padding: 0 20px; }
-  .nav-links li:not(:last-child) { display: none; }
+  nav { width: calc(100% - 24px); padding: 8px 8px 8px 16px; }
+  .nav-links li { display: none; }
   .sc-pin:not(#pin-reveal):not(#pin-portal) { display: none; }
   .sc-steps { display: none; }
   #portal-cta { padding: 72px 24px; }
@@ -693,13 +723,15 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     <img src="images/logo.png" class="beam-star-logo" alt="BEAM"
       onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
     <div class="beam-icon" style="display:none">B</div>
-    BEAM Academy
+    <span>BEAM Academy</span>
   </a>
   <ul class="nav-links">
-    <li><a href="index.html">← Back to BEAM Academy</a></li>
+    <li><a href="index.html">← Back to BEAM</a></li>
+    <li><a href="index.html#why">Why BEAM</a></li>
+    <li><a href="index.html#subjects">Subjects</a></li>
     <li><a href="index.html#pricing">Pricing</a></li>
-    <li><a href="index.html#cta" class="nav-cta">Free Trial</a></li>
   </ul>
+  <a href="index.html#cta" class="nav-cta">Free Trial</a>
 </nav>
 
 <!-- ════════════════════════════════════════════
@@ -881,7 +913,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
                 </div>
               </div>
               <div class="bm-drop-zone">
-                <div class="bm-drop-icon">📄</div>
+                <div class="bm-drop-icon"><svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H5a1 1 0 00-1 1v14a1 1 0 001 1h10a1 1 0 001-1V7l-4-5z"/><path d="M12 2v5h5"/></svg></div>
                 <div class="bm-drop-text">Drag &amp; drop your scan here, or click Upload<br><em>CamScanner · any PDF · results back overnight</em></div>
               </div>
               <div class="bm-tabs">
@@ -938,7 +970,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
                 </div>
               </div>
               <div class="bm-ws-generated">
-                <div style="font-size:.95rem">📄</div>
+                <div style="display:flex;align-items:center;color:var(--p)"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H5a1 1 0 00-1 1v14a1 1 0 001 1h10a1 1 0 001-1V7l-4-5z"/><path d="M12 2v5h5M7 10h6M7 13h4"/></svg></div>
                 <div class="bm-ws-gen-text">Custom Worksheet Generated · Statistics</div>
                 <button class="bm-ws-gen-btn">Download</button>
               </div>
@@ -962,7 +994,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     <!-- Pin: dashboard — progress chart -->
     <div class="sc-pin" id="pin-dashboard">
       <div class="sc-pin-inner">
-        <span class="sc-pin-icon">📈</span>
+        <span class="sc-pin-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,14 7,9 11,12 18,5"/><polyline points="13,5 18,5 18,10"/></svg></span>
         <span class="sc-pin-tag">Live Progress Tracking</span>
         <div class="sc-pin-title">Every topic, every week.</div>
         <div class="sc-pin-desc">Not a vague "doing well". An exact score per topic updated after every session.</div>
@@ -973,7 +1005,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     <!-- Pin: dashboard — greeting -->
     <div class="sc-pin" id="pin-greeting">
       <div class="sc-pin-inner">
-        <span class="sc-pin-icon">👋</span>
+        <span class="sc-pin-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="6.5" r="3"/><path d="M3.5 17.5c0-3.3 2.9-6 6.5-6s6.5 2.7 6.5 6"/></svg></span>
         <span class="sc-pin-tag">Your Dashboard</span>
         <div class="sc-pin-title">Personalised from day one.</div>
         <div class="sc-pin-desc">Your name, your subjects, your upcoming sessions. All at a glance the moment you log in.</div>
@@ -983,7 +1015,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     <!-- Pin: sidebar -->
     <div class="sc-pin" id="pin-sidebar">
       <div class="sc-pin-inner">
-        <span class="sc-pin-icon">🗂️</span>
+        <span class="sc-pin-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg></span>
         <span class="sc-pin-tag">All In One Place</span>
         <div class="sc-pin-title">Six tools. One login.</div>
         <div class="sc-pin-desc">Dashboard, Worksheets, Past Papers, Results, Homework, Q&amp;A and a Study Timer. All accessible from the sidebar.</div>
@@ -993,7 +1025,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     <!-- Pin: worksheets overview -->
     <div class="sc-pin" id="pin-worksheets">
       <div class="sc-pin-inner">
-        <span class="sc-pin-icon">📝</span>
+        <span class="sc-pin-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H5a1 1 0 00-1 1v14a1 1 0 001 1h10a1 1 0 001-1V7l-4-5z"/><path d="M12 2v5h5M7 10h6M7 13h4"/></svg></span>
         <span class="sc-pin-tag">Custom Worksheets</span>
         <div class="sc-pin-title">Built for you, not everyone.</div>
         <div class="sc-pin-desc">Every worksheet is built from your personal diagnostic data, targeting the exact areas you need to work on.</div>
@@ -1004,7 +1036,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     <!-- Pin: search focused -->
     <div class="sc-pin" id="pin-search">
       <div class="sc-pin-inner">
-        <span class="sc-pin-icon">🔍</span>
+        <span class="sc-pin-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="5.5"/><path d="M16 16l-3.5-3.5"/></svg></span>
         <span class="sc-pin-tag">Worksheet Search</span>
         <div class="sc-pin-title">Find anything instantly.</div>
         <div class="sc-pin-desc">Search across all your worksheets by topic, subject, or week. The entire library pulled up in a second.</div>
@@ -1014,7 +1046,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     <!-- Pin: search typed trigonometry -->
     <div class="sc-pin" id="pin-typed">
       <div class="sc-pin-inner">
-        <span class="sc-pin-icon">⚡</span>
+        <span class="sc-pin-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2L4 11h7l-2 7 9-11h-7l2-7z"/></svg></span>
         <span class="sc-pin-tag">Instant Results</span>
         <div class="sc-pin-title">Your exact topic, right there.</div>
         <div class="sc-pin-desc">Type "trigonometry" and every trig worksheet you've ever been assigned surfaces immediately, ready to download.</div>
@@ -1024,7 +1056,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     <!-- Pin: past papers sidebar -->
     <div class="sc-pin" id="pin-pastpapers">
       <div class="sc-pin-inner">
-        <span class="sc-pin-icon">📤</span>
+        <span class="sc-pin-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13v3a1 1 0 001 1h12a1 1 0 001-1v-3M10 3v10M6.5 6.5L10 3l3.5 3.5"/></svg></span>
         <span class="sc-pin-tag">Past Paper Marking</span>
         <div class="sc-pin-title">Upload tonight, results tomorrow.</div>
         <div class="sc-pin-desc">Your tutor personally reviews every question. Not automated, not AI. Real feedback by morning.</div>
@@ -1035,7 +1067,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     <!-- Pin: past papers full view -->
     <div class="sc-pin" id="pin-papersview">
       <div class="sc-pin-inner">
-        <span class="sc-pin-icon">📎</span>
+        <span class="sc-pin-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.5l-7 7a4 4 0 01-5.66-5.66l7-7a2.5 2.5 0 013.54 3.54l-7 7a1 1 0 01-1.42-1.42l6.3-6.3"/></svg></span>
         <span class="sc-pin-tag">Any Paper, Any Subject</span>
         <div class="sc-pin-title">Maths, English, Chemistry, Physics.</div>
         <div class="sc-pin-desc">Upload a PDF scan (CamScanner works perfectly). Supports all HSC subjects covered by BEAM tutors.</div>
@@ -1045,7 +1077,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     <!-- Pin: results -->
     <div class="sc-pin" id="pin-results">
       <div class="sc-pin-inner">
-        <span class="sc-pin-icon">📊</span>
+        <span class="sc-pin-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="11" width="4" height="7" rx="1"/><rect x="8" y="7" width="4" height="11" rx="1"/><rect x="14" y="3" width="4" height="15" rx="1"/></svg></span>
         <span class="sc-pin-tag">Detailed Results</span>
         <div class="sc-pin-title">Every mistake mapped to a plan.</div>
         <div class="sc-pin-desc">Score by topic, written comments on each wrong answer, and a custom worksheet generated automatically when marking is done.</div>
