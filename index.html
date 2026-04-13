@@ -156,19 +156,7 @@
   /* LAYOUT */
   section { padding: 96px 48px; }
   .container { max-width: 1200px; margin: 0 auto; }
-  .section-tag {
-    display: inline-block;
-    font-size: .75rem;
-    font-weight: 600;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--p);
-    background: var(--p-soft);
-    border: 1px solid var(--border);
-    padding: 5px 12px;
-    border-radius: 100px;
-    margin-bottom: 18px;
-  }
+  .section-tag { display: none; }
   .section-title {
     font-family: var(--font-head);
     font-weight: 800;
@@ -177,12 +165,16 @@
     line-height: 1.1;
     color: var(--text);
     margin-bottom: 14px;
+    text-align: center;
   }
   .section-sub {
     color: var(--text2);
     font-size: 1.05rem;
     max-width: 560px;
     line-height: 1.65;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
   }
   .text-center { text-align: center; }
   .text-center .section-sub { margin: 0 auto; }
@@ -370,203 +362,291 @@
     50%       { transform: translateY(6px); opacity: .9; }
   }
 
-  /* ═══ TICKER ═══ */
-  #ticker {
-    background: var(--p);
-    color: white;
-    padding: 16px 0;
-    overflow: hidden;
-    white-space: nowrap;
+  /* ═══ PROOF ROW — EDGE-REVEAL STAT CARDS ═══ */
+  #proof-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    overflow: visible;
+    position: relative;
   }
-  .ticker-track {
-    display: inline-flex;
-    animation: tickerScroll 40s linear infinite;
+  .proof-card {
+    padding: 48px 36px;
+    border-right: 1px solid var(--border);
+    background: var(--bg);
+    opacity: 0;
+    transition: opacity .7s ease, transform .75s cubic-bezier(.34,1.3,.64,1), box-shadow .25s ease;
+    position: relative;
   }
-  .ticker-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 16px;
-    padding: 0 24px;
-    font-size: .88rem;
-    font-weight: 500;
+  .proof-card.visible:hover {
+    transform: translateY(-10px) !important;
+    box-shadow: 0 22px 52px rgba(139,116,204,.16);
+    z-index: 2;
+    border-radius: 0 0 12px 12px;
   }
-  .ticker-item::after { content: '·'; opacity: .5; margin-left: 16px; }
-  @keyframes tickerScroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+  .proof-card:last-child { border-right: none; }
+  .proof-card.from-left  { transform: translateX(-90px); }
+  .proof-card.from-right { transform: translateX(90px); }
+  .proof-card.visible { opacity: 1; transform: none; }
+  .proof-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .6s cubic-bezier(.4,0,.2,1) .5s;
+  }
+  .proof-card.visible::after { transform: scaleX(1); }
+  .proof-card:nth-child(1)::after { background: #D97706; }
+  .proof-card:nth-child(2)::after { background: var(--p); }
+  .proof-card:nth-child(3)::after { background: #059669; }
+  .proof-card:nth-child(4)::after { background: #0891B2; }
+  .proof-val {
+    font-family: var(--font-head);
+    font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -.04em;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .proof-label {
+    font-size: .83rem;
+    color: var(--text2);
+    line-height: 1.5;
+    max-width: 160px;
   }
 
-  /* ═══ WHY BEAM ═══ */
-  #why { background: white; }
-  /* ═══ WHY BEAM — HORIZONTAL SCROLL ═══ */
-  .why-scroll-outer {
+  /* ═══ WHY BEAM — BUTTON-DRIVEN INFINITE CAROUSEL ═══ */
+  #why {
+    background: var(--bg2);
+    padding: 96px 0 80px;
+    overflow: hidden;
     position: relative;
-    margin-top: 56px;
   }
-  .why-track-wrap {
-    overflow-x: auto;
-    overflow-y: visible;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    cursor: grab;
-    padding-bottom: 8px;
+  .why-sticky {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 48px;
   }
-  .why-track-wrap::-webkit-scrollbar { display: none; }
-  .why-track-wrap:active { cursor: grabbing; }
-  .why-track {
+  .why-sticky-header {
+    margin-bottom: 36px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+  .why-sticky-header .section-title { margin-bottom: 0; }
+  .why-sticky-header .section-sub { margin-top: 8px; font-size: .88rem; color: var(--text2); }
+  /* Clipping viewport — constrains visible area to ~2.3 card-widths */
+  .why-carousel-viewport {
+    overflow: hidden;
+    width: 100%;
+  }
+  /* The sliding rail */
+  .why-cards-slider {
     display: flex;
     gap: 24px;
-    padding: 8px 4px 16px;
-    width: max-content;
+    will-change: transform;
+    transition: transform .52s cubic-bezier(.4,0,.2,1);
+    flex-shrink: 0;
+    padding: 24px 0 32px;
+    cursor: grab;
+    user-select: none;
   }
+  .why-cards-slider:active { cursor: grabbing; }
+  /* Individual card */
   .why-card {
+    flex-shrink: 0;
+    width: min(360px, 78vw);
     background: white;
     border: 1.5px solid var(--border);
     border-radius: 20px;
-    padding: 32px 28px;
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
     position: relative;
     overflow: hidden;
-    transition: transform .3s, box-shadow .3s, border-color .3s;
+    transform: scale(0.78);
+    opacity: 0.18;
+    pointer-events: none;
+    transition: transform .52s cubic-bezier(.4,0,.2,1), opacity .52s ease, box-shadow .3s, border-color .3s;
+    cursor: pointer;
+  }
+  .why-card.active {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 24px 64px rgba(124,58,237,.18);
+    border-color: rgba(124,58,237,.28);
+    cursor: default;
+    pointer-events: auto;
+  }
+  .why-card.adjacent {
+    transform: scale(0.91);
+    opacity: 0.68;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  .why-card.secondary {
+    transform: scale(0.84);
+    opacity: 0.35;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  .why-card.far {
+    transform: scale(0.78);
+    opacity: 0.18;
+    pointer-events: none;
+  }
+  /* Nav buttons */
+  .why-btn {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    background: white;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text2);
     flex-shrink: 0;
-    width: 340px;
-    scroll-snap-align: start;
+    transition: background .2s, border-color .2s, color .2s, box-shadow .2s, transform .15s;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
   }
-  .why-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 0; height: 3px;
-    background: linear-gradient(90deg, var(--p), var(--p2));
-    transition: width .3s ease;
+  .why-btn:hover { background: var(--p-soft); border-color: var(--p); color: var(--p); box-shadow: 0 4px 16px rgba(124,58,237,.18); transform: scale(1.08); }
+  .why-btn:active { transform: scale(.92); }
+  .why-counter {
+    font-family: var(--font-head);
+    font-size: .88rem;
+    font-weight: 700;
+    color: var(--text3);
+    min-width: 46px;
+    text-align: center;
+    letter-spacing: .04em;
   }
-  .why-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 14px 40px rgba(139,116,204,.1);
-    border-color: rgba(139,116,204,.3);
-  }
-  .why-card:hover::after { width: 100%; }
-
-  /* Per-card accent colours — themed to each card's content */
-  .why-track .why-card:nth-child(1) { border-top: 3px solid #D97706; }
-  .why-track .why-card:nth-child(1) .why-card-num { color: #FEF3C7; }
-  .why-track .why-card:nth-child(2) { border-top: 3px solid #2563EB; }
-  .why-track .why-card:nth-child(2) .why-card-num { color: #DBEAFE; }
-  .why-track .why-card:nth-child(3) { border-top: 3px solid #059669; }
-  .why-track .why-card:nth-child(3) .why-card-num { color: #D1FAE5; }
-  .why-track .why-card:nth-child(4) { border-top: 3px solid #4F46E5; }
-  .why-track .why-card:nth-child(4) .why-card-num { color: #E0E7FF; }
-  .why-track .why-card:nth-child(5) { border-top: 3px solid #E11D48; }
-  .why-track .why-card:nth-child(5) .why-card-num { color: #FFE4E6; }
-  .why-track .why-card:nth-child(6) { border-top: 3px solid #0891B2; }
-  .why-track .why-card:nth-child(6) .why-card-num { color: #CFFAFE; }
+  /* Per-card top accent (data-why avoids nth-child breakage from clone nodes) */
+  .why-card[data-why="1"] { border-top: 3px solid #D97706; }
+  .why-card[data-why="2"] { border-top: 3px solid #2563EB; }
+  .why-card[data-why="3"] { border-top: 3px solid #059669; }
+  .why-card[data-why="4"] { border-top: 3px solid #4F46E5; }
+  .why-card[data-why="5"] { border-top: 3px solid #E11D48; }
+  .why-card[data-why="6"] { border-top: 3px solid #0891B2; }
 
   .why-card-num {
     font-family: var(--font-head);
-    font-size: 3.5rem;
+    font-size: 4.5rem;
     font-weight: 800;
-    color: var(--p-soft);
     line-height: 1;
-    margin-bottom: 12px;
-    letter-spacing: -2px;
+    letter-spacing: -3px;
     user-select: none;
+    margin-bottom: 16px;
   }
-  .why-icon {
-    width: 48px; height: 48px;
-    background: var(--p-soft);
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem;
-    margin-bottom: 18px;
-  }
+  .why-card[data-why="1"] .why-card-num { color: #FEF3C7; }
+  .why-card[data-why="2"] .why-card-num { color: #DBEAFE; }
+  .why-card[data-why="3"] .why-card-num { color: #D1FAE5; }
+  .why-card[data-why="4"] .why-card-num { color: #E0E7FF; }
+  .why-card[data-why="5"] .why-card-num { color: #FFE4E6; }
+  .why-card[data-why="6"] .why-card-num { color: #CFFAFE; }
+
+  .why-card-body { flex: 1; }
   .why-card h3 {
     font-family: var(--font-head);
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     color: var(--text);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    letter-spacing: -.015em;
   }
   .why-tagline {
     font-style: italic;
-    font-size: .85rem;
+    font-size: .82rem;
     color: var(--p);
     margin-bottom: 12px;
     font-weight: 500;
   }
-  .why-card p { font-size: .88rem; color: var(--text2); line-height: 1.65; }
-  .why-scroll-hint {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--text2);
-    font-size: .82rem;
-    margin-top: 20px;
-    opacity: .7;
-  }
-  .why-scroll-hint svg { opacity: .5; }
-  .why-nav {
+  .why-card p { font-size: .86rem; color: var(--text2); line-height: 1.7; }
+
+  /* Progress indicator row */
+  .why-progress-row {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
-    margin-top: 24px;
-  }
-  .why-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    border: 1.5px solid var(--border);
-    background: white;
-    color: var(--p);
-    cursor: pointer;
-    transition: background .2s, border-color .2s, transform .15s, opacity .2s;
+    gap: 14px;
+    margin-top: 28px;
     flex-shrink: 0;
   }
-  .why-arrow:hover {
-    background: var(--p);
-    border-color: var(--p);
-    color: white;
-    transform: scale(1.08);
-  }
-  .why-arrow:active { transform: scale(0.95); }
-  .why-arrow:disabled { opacity: .3; cursor: default; pointer-events: none; }
-  .why-dots {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-  }
-  .why-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
+  .why-progress-bar-wrap {
+    flex: 1;
+    max-width: 220px;
+    height: 2px;
     background: var(--border);
-    transition: background .3s, transform .3s;
-    cursor: pointer;
+    border-radius: 99px;
+    overflow: hidden;
   }
-  .why-dot.active {
-    background: var(--p);
-    transform: scale(1.3);
+  .why-progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--p), var(--p2));
+    border-radius: 99px;
+    width: 0%;
+    transition: width .15s linear;
+  }
+  .why-scroll-cue {
+    font-size: .72rem;
+    color: var(--text3);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
 
-  /* ═══ GRADE TRANSFORMATION ═══ */
+  /* ═══ GRADE TRANSFORMATION — 50/50 COLOR SPLIT ═══ */
   #grade-transform {
-    background: linear-gradient(135deg, #493090, #8B74CC, #8E6BC8);
-    color: white;
-    padding: 96px 48px;
-  }
-  .gt-grid {
-    max-width: 1200px;
-    margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 64px;
-    align-items: center;
+    grid-template-columns: 1fr 1fr;
+    min-height: 540px;
+    margin: 0 48px 96px;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 28px 80px rgba(13,5,32,.22);
   }
+  .gt-left-panel {
+    background: #150930 url('images/teaching.jpg') center/cover no-repeat;
+    color: white;
+    padding: 96px 72px 96px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+  .gt-left-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(15,6,40,.72) 20%, rgba(35,14,72,.55));
+    pointer-events: none;
+  }
+  .gt-left-panel .gt-left {
+    position: relative;
+    z-index: 1;
+  }
+  .gt-right-panel {
+    background: linear-gradient(145deg, #3A1A82, #6845B5, #9070CC);
+    color: white;
+    padding: 96px 60px 96px 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 48px;
+    align-items: flex-start;
+  }
+  /* Keep .gt-left for JS that reads it */
+  .gt-left { /* inner of left panel */ }
   .gt-tag {
     display: inline-block;
-    background: rgba(255,255,255,.2);
-    border: 1px solid rgba(255,255,255,.3);
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.25);
     border-radius: 100px;
     padding: 5px 14px;
     font-size: .75rem;
@@ -578,14 +658,14 @@
   }
   .gt-left h2 {
     font-family: var(--font-head);
-    font-size: 2.8rem;
+    font-size: clamp(2rem, 3vw, 3rem);
     font-weight: 800;
     letter-spacing: -.03em;
     color: white;
     margin-bottom: 16px;
     line-height: 1.1;
   }
-  .gt-left p { color: rgba(255,255,255,.75); font-size: .95rem; line-height: 1.7; margin-bottom: 28px; }
+  .gt-left p { color: rgba(255,255,255,.72); font-size: .95rem; line-height: 1.7; margin-bottom: 28px; }
   .rings-wrap {
     display: flex;
     align-items: center;
@@ -600,7 +680,7 @@
   }
   .ring-inner {
     position: relative;
-    width: 90px; height: 90px;
+    width: 110px; height: 110px;
   }
   .ring-inner svg {
     position: absolute;
@@ -627,17 +707,17 @@
   .ring-after-wrap { box-shadow: 0 0 40px rgba(255,255,255,.2); border-radius: 50%; }
   .ring-arrow { font-size: 1.8rem; opacity: .6; color: white; }
   .ring-caption { font-size: .75rem; color: rgba(255,255,255,.7); font-weight: 500; text-align: center; }
-  .gt-stats { display: flex; flex-direction: column; gap: 28px; }
+  .gt-stats { display: flex; flex-direction: column; gap: 20px; }
   .gt-stat-num {
     font-family: var(--font-head);
-    font-size: 2.4rem;
+    font-size: 2.8rem;
     font-weight: 800;
     color: white;
-    letter-spacing: -.03em;
+    letter-spacing: -.04em;
     line-height: 1;
     margin-bottom: 4px;
   }
-  .gt-stat-desc { font-size: .85rem; color: rgba(255,255,255,.75); line-height: 1.5; }
+  .gt-stat-desc { font-size: .85rem; color: rgba(255,255,255,.72); line-height: 1.45; max-width: 220px; }
 
   /* ═══ REVIEWS ═══ */
   #reviews { background: var(--bg2); padding-bottom: 80px; }
@@ -771,54 +851,280 @@
   }
   .stat-label { font-size: .83rem; color: rgba(255,255,255,.75); line-height: 1.4; }
 
-  /* ═══ HOW IT WORKS ═══ */
+  /* ═══ HOW IT WORKS — 2×2 HORIZONTAL CARDS ═══ */
   #how { background: white; }
+  #how .steps-grid { text-align: left; }
   .steps-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 28px;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
     margin-top: 56px;
-    position: relative;
-  }
-  .steps-grid::before {
-    content: '';
-    position: absolute;
-    top: 28px;
-    left: calc(12.5% + 14px);
-    right: calc(12.5% + 14px);
-    height: 1px;
-    border-top: 2px dashed var(--border);
-    z-index: 0;
   }
   .step-card {
     background: white;
     border: 1.5px solid var(--border);
     border-radius: 20px;
-    padding: 28px 22px;
-    text-align: center;
+    padding: 28px 28px;
+    display: flex;
+    align-items: flex-start;
+    gap: 22px;
+    text-align: left;
     transition: transform .3s, box-shadow .3s;
-    position: relative; z-index: 1;
+    position: relative;
   }
-  .step-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(139,116,204,.1); }
+  .step-card:hover { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(139,116,204,.1); }
+  .step-card:nth-child(1) { border-left: 3px solid #D97706; }
+  .step-card:nth-child(2) { border-left: 3px solid #059669; }
+  .step-card:nth-child(3) { border-left: 3px solid #4F46E5; }
+  .step-card:nth-child(4) { border-left: 3px solid var(--p); }
   .step-num {
-    width: 56px; height: 56px;
+    width: 52px; height: 52px;
     background: linear-gradient(135deg, var(--p), var(--p2));
-    border-radius: 50%;
+    border-radius: 14px;
     display: flex; align-items: center; justify-content: center;
     font-family: var(--font-head);
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: 800;
     color: white;
-    margin: 0 auto 18px;
+    flex-shrink: 0;
   }
-  .step-card h3 { font-family: var(--font-head); font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: 10px; }
+  .step-body { flex: 1; }
+  .step-card h3 { font-family: var(--font-head); font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: 8px; }
   .step-card p { font-size: .85rem; color: var(--text2); line-height: 1.65; }
 
-  /* ═══ PORTAL PREVIEW ═══ */
-  #portal-preview { background: var(--bg2); text-align: center; }
+  /* ═══ TRAJECTORY CHART — SPLIT SCREEN ═══ */
+  #trajectory {
+    background: var(--bg2);
+    padding: 72px 28px;
+  }
+  .traj-split {
+    display: grid;
+    grid-template-columns: 1.9fr 1fr;
+    gap: 44px;
+    align-items: center;
+    max-width: 1480px;
+    margin: 0 auto;
+  }
+  .traj-chart-card {
+    background: linear-gradient(160deg, #1B0B42 0%, #0D0520 100%);
+    border-radius: 20px;
+    padding: 22px 12px 12px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(13,5,32,.38);
+    cursor: zoom-in;
+    transition: box-shadow .28s ease, transform .28s ease;
+  }
+  .traj-chart-card:hover { transform: translateY(-4px); box-shadow: 0 44px 110px rgba(13,5,32,.55); }
+  /* Expand overlay */
+  #traj-expand {
+    position: fixed; inset: 0; z-index: 9100;
+    background: rgba(4,1,14,.88);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    display: none; align-items: center; justify-content: center; padding: 24px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .3s ease;
+  }
+  #traj-expand.open { display: flex; opacity: 1; pointer-events: auto; }
+  .traj-expand-inner {
+    background: linear-gradient(160deg, #1B0B42 0%, #0D0520 100%);
+    border-radius: 22px;
+    padding: 26px 16px 16px;
+    width: min(1320px, 96vw);
+    box-shadow: 0 56px 150px rgba(0,0,0,.8), inset 0 0 0 1px rgba(196,181,253,.1);
+    transform: scale(0.88) translateY(28px);
+    transition: transform .44s cubic-bezier(.34,1.12,.64,1);
+    position: relative;
+    overflow: hidden;
+  }
+  #traj-expand.open .traj-expand-inner { transform: scale(1) translateY(0); }
+  .traj-expand-close {
+    position: absolute; top: 13px; right: 13px;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.16);
+    color: rgba(255,255,255,.6); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .18s, color .18s, transform .15s;
+    font-size: 15px; line-height: 1; z-index: 1;
+  }
+  .traj-expand-close:hover { background: rgba(255,255,255,.2); color: white; transform: scale(1.12); }
+  .traj-svg-wrap { position: relative; width: 100%; overflow: visible; }
+  .traj-svg { width: 100%; overflow: visible; }
+  /* Axes and grid — fade in on scroll */
+  .traj-axis { stroke: rgba(255,255,255,.12); stroke-width: 1; opacity: 0; transition: opacity .5s ease; }
+  .traj-axis.shown { opacity: 1; }
+  .traj-grid { stroke: rgba(255,255,255,.06); stroke-width: 1; stroke-dasharray: 4 4; opacity: 0; transition: opacity .4s ease; }
+  .traj-grid.shown { opacity: 1; }
+  /* BEAM curve */
+  .traj-beam-area { fill: url(#beamGrad); opacity: 0; transition: opacity .6s ease; }
+  .traj-beam-area.shown { opacity: 1; }
+  .traj-beam-path {
+    fill: none; stroke: #C4B5FD; stroke-width: 3.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 9999; stroke-dashoffset: 9999;
+    opacity: 0;
+    transition: stroke-dashoffset 1.8s cubic-bezier(.16,.84,.44,1);
+    filter: drop-shadow(0 0 14px rgba(167,139,250,.9)) drop-shadow(0 0 4px rgba(200,180,255,1));
+  }
+  @keyframes dotPulse { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
+  /* Average curve */
+  .traj-avg-path {
+    fill: none; stroke: rgba(255,255,255,.42); stroke-width: 2.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 9999; stroke-dashoffset: 9999;
+    opacity: 0;
+    transition: stroke-dashoffset 2.2s cubic-bezier(.4,0,.2,1) .2s;
+  }
+  /* Callout numbered circles */
+  .traj-callout {
+    opacity: 0; transform-box: fill-box; transform-origin: center;
+    cursor: pointer; pointer-events: none;
+    transition: transform .2s ease;
+  }
+  .traj-callout.shown { opacity: 1; pointer-events: auto; }
+  .traj-callout.traj-c-active { transform: scale(1.2); }
+  .traj-callout circle { transition: filter .2s ease; }
+  .traj-callout.traj-c-active circle {
+    filter: drop-shadow(0 0 12px rgba(167,139,250,.95)) drop-shadow(0 0 4px rgba(255,255,255,.7));
+  }
+  /* Axis / labels */
+  .traj-label { font-family: var(--font-body); fill: rgba(255,255,255,.4); font-size: 11px; }
+  .traj-y-label { font-family: var(--font-body); fill: rgba(255,255,255,.4); font-size: 11px; text-anchor: end; }
+  /* Dot at BEAM endpoint */
+  .traj-dot {
+    fill: #C4B5FD; opacity: 0; transition: opacity .5s ease;
+    filter: drop-shadow(0 0 10px rgba(167,139,250,1)) drop-shadow(0 0 24px rgba(167,139,250,.5));
+  }
+  .traj-dot.shown { opacity: 1; }
+  .traj-dot.pulsing { animation: dotPulse 1.8s ease-in-out infinite; }
+  /* Comment texts */
+  .traj-comment { opacity: 0; transition: opacity .55s ease; }
+  .traj-comment.shown { opacity: 1; }
+  /* Right content panel */
+  .traj-content-panel { display: flex; flex-direction: column; justify-content: center; }
+  .traj-content-panel .section-title { text-align: left; margin-left: 0; margin-right: 0; margin-bottom: 10px; font-size: clamp(1.5rem, 2.6vw, 2.2rem); }
+  .traj-content-panel .section-sub { text-align: left; margin-left: 0; margin-right: 0; margin-bottom: 22px; font-size: .87rem; }
+  .traj-legend { display: flex; gap: 14px; margin-bottom: 22px; flex-wrap: wrap; }
+  .traj-legend-item { display: flex; align-items: center; gap: 8px; font-size: .79rem; color: var(--text2); }
+  .traj-legend-line { width: 26px; height: 3px; border-radius: 2px; }
+  .traj-legend-line.beam-line { background: var(--p); }
+  .traj-legend-line.avg-dash {
+    background: repeating-linear-gradient(90deg, var(--text3) 0, var(--text3) 5px, transparent 5px, transparent 10px);
+  }
+  /* Milestone list */
+  .traj-milestones { display: flex; flex-direction: column; gap: 10px; }
+  .traj-milestone {
+    display: flex; align-items: flex-start; gap: 13px;
+    padding: 14px 16px;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
+    cursor: default;
+  }
+  .traj-milestone:hover { box-shadow: 0 6px 18px rgba(139,116,204,.1); border-color: rgba(139,116,204,.28); }
+  .traj-milestone.traj-m-active {
+    transform: translateX(9px);
+    box-shadow: 0 14px 36px rgba(124,58,237,.16);
+    border-color: rgba(124,58,237,.45);
+    background: linear-gradient(135deg, #faf8ff 0%, #eee8ff 100%);
+  }
+  .traj-m-num {
+    width: 30px; height: 30px; flex-shrink: 0;
+    background: #7C3AED; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-head); font-size: .88rem; font-weight: 800; color: white;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .traj-milestone.traj-m-active .traj-m-num { transform: scale(1.12); box-shadow: 0 4px 14px rgba(124,58,237,.35); }
+  .traj-m-body h4 { font-family: var(--font-head); font-weight: 700; font-size: .87rem; color: var(--text); margin-bottom: 3px; }
+  .traj-m-body p { font-size: .77rem; color: var(--text2); line-height: 1.55; margin: 0; }
+
+  /* ═══ PORTAL PREVIEW — 2-COLUMN SPLIT ═══ */
+  #portal-preview { background: var(--bg2); }
+  .portal-split {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 64px;
+    align-items: center;
+    margin-top: 56px;
+  }
+  .portal-split-left { text-align: left; }
+  .portal-split-left .section-title { text-align: left; font-size: clamp(1.4rem, 2.2vw, 2rem); margin-bottom: 12px; margin-left: 0; margin-right: 0; }
+  .portal-split-left .section-sub { text-align: left; font-size: .9rem; margin-bottom: 28px; margin-left: 0; margin-right: 0; }
+  .portal-feat-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
+  .portal-feat {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .portal-feat-icon {
+    width: 38px; height: 38px;
+    background: var(--p-soft);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: var(--p);
+  }
+  .portal-feat-text h4 {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: .92rem;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .portal-feat-text p { font-size: .8rem; color: var(--text2); line-height: 1.5; margin: 0; }
+
+  /* Hero floating stat cards */
+  .hero-stats-float {
+    position: absolute;
+    bottom: 48px;
+    right: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 2;
+  }
+  .hero-stat-card {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 14px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 200px;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .hero-stat-card.in { opacity: 1; transform: none; }
+  .hero-stat-card-icon {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 1rem;
+  }
+  .hero-stat-card-val {
+    font-family: var(--font-head);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .hero-stat-card-lbl {
+    font-size: .72rem;
+    color: rgba(255,255,255,.7);
+    line-height: 1.2;
+  }
+
   .portal-mockup-wrap {
-    margin: 48px auto 40px;
-    max-width: 860px;
+    margin: 0 auto;
+    max-width: 100%;
     background: white;
     border-radius: 16px;
     border: 1px solid var(--border);
@@ -1689,7 +1995,10 @@
 
   /* RESPONSIVE */
   @media (max-width: 1024px) {
-    .why-card { width: 300px; }
+    .portal-split { grid-template-columns: 1fr; gap: 40px; }
+    .hero-stats-float { display: none; }
+    #grade-transform { grid-template-columns: 1fr; margin: 0 24px 72px; border-radius: 20px; }
+    .gt-left-panel, .gt-right-panel { padding: 72px 48px; }
     .tutors-grid { grid-template-columns: repeat(3, 1fr); }
     .gt-grid { grid-template-columns: 1fr; gap: 48px; text-align: center; }
     .rings-wrap { justify-content: center; }
@@ -1702,8 +2011,11 @@
     section { padding: 72px 24px; }
     #hero { padding: 100px 24px 60px; }
     nav { padding: 0 20px; }
-    .steps-grid { grid-template-columns: 1fr 1fr; }
-    .steps-grid::before { display: none; }
+    .steps-grid { grid-template-columns: 1fr; }
+    .why-sticky { padding: 0 20px; }
+    .why-card { flex-direction: column; gap: 12px; padding: 24px 20px; }
+    .why-card-num { font-size: 3rem; }
+    .why-card h3 { font-size: 1.2rem; }
     .price-cards { grid-template-columns: 1fr; max-width: 380px; }
     .price-card.featured { transform: none; }
     .cta-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -1715,7 +2027,8 @@
     .stats-grid { grid-template-columns: 1fr 1fr; }
     .tutors-grid { grid-template-columns: 1fr 1fr; }
     .flip-grid { grid-template-columns: 1fr; }
-    .why-card { width: 280px; }
+    /* why-card width handled by bento grid */
+    #grade-transform { margin: 0 16px 56px; border-radius: 16px; }
     #cta { padding: 72px 24px; }
     footer { padding: 48px 24px 0; }
     #trial-panel { width: 100vw; padding: 36px 24px; }
@@ -1867,6 +2180,7 @@
       <a href="#cta" class="btn btn-p btn-magnetic" onclick="openTrial();return false">Get My Free Trial →</a>
     </div>
   </div>
+
   <div id="scroll-hint" onclick="window.scrollBy({top: window.innerHeight * 0.8, behavior:'smooth'})">
     <span>Scroll</span>
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -1875,123 +2189,121 @@
   </div>
 </section>
 
-<!-- TICKER -->
-<div id="ticker">
-  <div class="ticker-track">
-    <span class="ticker-item">Suite 206, 2 Pembroke St — Epping NSW 2121</span>
-    <span class="ticker-item">All tutors scored 95%+ in their HSC subjects</span>
-    <span class="ticker-item">5.0 Google Rating from real parents</span>
-    <span class="ticker-item">Topic-by-topic tracking — not just an overall percentage</span>
-    <span class="ticker-item">Private Discord channel — questions answered within the hour</span>
-    <span class="ticker-item">4 personalised documents from your very first free lesson</span>
-    <span class="ticker-item">All tutors: Baulkham Hills High School graduates</span>
-    <span class="ticker-item">Years 7–12 · Maths · English · Chemistry · Physics</span>
-    <span class="ticker-item">Now studying Medicine, Law &amp; Optometry at top universities</span>
-    <span class="ticker-item">Custom worksheets targeting your exact diagnostic gaps</span>
-    <span class="ticker-item">Suite 206, 2 Pembroke St — Epping NSW 2121</span>
-    <span class="ticker-item">All tutors scored 95%+ in their HSC subjects</span>
-    <span class="ticker-item">5.0 Google Rating from real parents</span>
-    <span class="ticker-item">Topic-by-topic tracking — not just an overall percentage</span>
-    <span class="ticker-item">Private Discord channel — questions answered within the hour</span>
-    <span class="ticker-item">4 personalised documents from your very first free lesson</span>
-    <span class="ticker-item">All tutors: Baulkham Hills High School graduates</span>
-    <span class="ticker-item">Years 7–12 · Maths · English · Chemistry · Physics</span>
-    <span class="ticker-item">Now studying Medicine, Law &amp; Optometry at top universities</span>
-    <span class="ticker-item">Custom worksheets targeting your exact diagnostic gaps</span>
+<!-- PROOF ROW -->
+<div id="proof-row">
+  <div class="proof-card from-left">
+    <div class="proof-val">+21 pts</div>
+    <div class="proof-label">average mark improvement in first term</div>
+  </div>
+  <div class="proof-card from-left" style="transition-delay:.1s">
+    <div class="proof-val">5.0 ★</div>
+    <div class="proof-label">Google Rating from real parents</div>
+  </div>
+  <div class="proof-card from-right" style="transition-delay:.2s">
+    <div class="proof-val">95%</div>
+    <div class="proof-label">of students improve in their first term</div>
+  </div>
+  <div class="proof-card from-right" style="transition-delay:.3s">
+    <div class="proof-val">&lt;1 hr</div>
+    <div class="proof-label">typical Discord response time, any night</div>
   </div>
 </div>
 
 <!-- WHY BEAM -->
 <section id="why">
-  <div class="container">
-    <div class="text-center rv">
-      <div class="section-tag">Why BEAM</div>
+  <div class="why-sticky">
+    <div class="why-sticky-header">
       <h2 class="section-title">Here's what makes BEAM unlike anything else.</h2>
       <p class="section-sub">We built the tutoring experience we wish we had.</p>
     </div>
-    <div class="why-scroll-outer rv">
-      <div class="why-track-wrap" id="whyTrack">
-        <div class="why-track">
-          <div class="why-card">
-            <div class="why-card-num">01</div>
-            
-            <h3>We've sat the exact same exams.</h3>
-            <p class="why-tagline">Tutors who've been in your child's shoes.</p>
-            <p>Every BEAM tutor is a Baulkham Hills High School graduate who scored 95%+ in their HSC subjects. They've sat the exact same exams your child is preparing for, felt the pressure, and come out the other side. They know exactly what markers reward, what trips students up, and what most tutoring centres never tell you.</p>
-          </div>
-          <div class="why-card">
-            <div class="why-card-num">02</div>
-            
-            <h3>No more 'doing fine'.</h3>
-            <p class="why-tagline">Feedback that actually means something.</p>
-            <p>We don't give parents generic progress reports. You get a live dashboard showing your child's exact score by topic, week by week. Not "78% overall" but Algebra at 92%, Calculus at 64%, and exactly which sub-topics need work next. Specific enough to act on immediately.</p>
-          </div>
-          <div class="why-card">
-            <div class="why-card-num">03</div>
-            
-            <h3>Practice that targets the gaps.</h3>
-            <p class="why-tagline">Custom worksheets, every single session.</p>
-            <p>Every worksheet is built from your child's diagnostic data, not pulled from a standard set everyone gets. They practise exactly what they're weak on, not what they've already mastered. Every minute of homework directly moves the needle on their marks.</p>
-          </div>
-          <div class="why-card">
-            <div class="why-card-num">04</div>
-            
-            <h3>Help at 9pm. Not next Tuesday.</h3>
-            <p class="why-tagline">Your own private Discord channel.</p>
-            <p>Every BEAM student gets their own private Discord channel, not a shared group chat where questions get lost. Drop a photo of your working or ask a concept question any time. A tutor responds directly to you, usually within the hour, always before the next morning.</p>
-          </div>
-          <div class="why-card">
-            <div class="why-card-num">05</div>
-            
-            <h3>A diagnostic worth keeping.</h3>
-            <p class="why-tagline">4 personalised documents from day one.</p>
-            <p>Your free trial produces a full progress report, custom targeted worksheet, answer key, and worked solutions. All yours permanently, even if you decide not to continue. No other tutoring centre offers this. It's a commitment to earning your trust before your money.</p>
-          </div>
-          <div class="why-card">
-            <div class="why-card-num">06</div>
-            
-            <h3>Real sessions. Not just small ones.</h3>
-            <p class="why-tagline">Tutors who know every student by name.</p>
-            <p>Our sessions run small enough that every tutor knows every student's name, progress, and weak spots before the lesson starts. There's no slipping through the cracks. When something improves, we notice. When it doesn't, we adapt before the next session, not at the next parent-teacher meeting.</p>
-          </div>
+    <div class="why-carousel-viewport" id="whyViewport">
+    <div class="why-cards-slider" id="whyTrack">
+      <div class="why-card active" data-why="1">
+        <div class="why-card-num">01</div>
+        <div class="why-card-body">
+          <h3>We've sat the exact same exams.</h3>
+          <p class="why-tagline">Tutors who've been in your child's shoes.</p>
+          <p>Every BEAM tutor is a Baulkham Hills High School graduate who scored 95%+ in their HSC subjects. They've sat the exact same exams your child is preparing for, felt the pressure, and come out the other side. They know exactly what markers reward, what trips students up, and what most tutoring centres never tell you.</p>
         </div>
       </div>
-      <div class="why-nav">
-        <button class="why-arrow" id="whyPrev" aria-label="Previous">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 4L6 9l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <div class="why-dots" id="whyDots">
-          <div class="why-dot active"></div>
-          <div class="why-dot"></div>
-          <div class="why-dot"></div>
-          <div class="why-dot"></div>
-          <div class="why-dot"></div>
-          <div class="why-dot"></div>
+      <div class="why-card" data-why="2">
+        <div class="why-card-num">02</div>
+        <div class="why-card-body">
+          <h3>No more 'doing fine'.</h3>
+          <p class="why-tagline">Feedback that actually means something.</p>
+          <p>We don't give parents generic progress reports. You get a live dashboard showing your child's exact score by topic, week by week. Not "78% overall" but Algebra at 92%, Calculus at 64%, and exactly which sub-topics need work next. Specific enough to act on immediately.</p>
         </div>
-        <button class="why-arrow" id="whyNext" aria-label="Next">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 4l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+      </div>
+      <div class="why-card" data-why="3">
+        <div class="why-card-num">03</div>
+        <div class="why-card-body">
+          <h3>Practice that targets the gaps.</h3>
+          <p class="why-tagline">Custom worksheets, every single session.</p>
+          <p>Every worksheet is built from your child's diagnostic data, not pulled from a standard set everyone gets. They practise exactly what they're weak on, not what they've already mastered. Every minute of homework directly moves the needle on their marks.</p>
+        </div>
+      </div>
+      <div class="why-card" data-why="4">
+        <div class="why-card-num">04</div>
+        <div class="why-card-body">
+          <h3>Help at 9pm. Not next Tuesday.</h3>
+          <p class="why-tagline">Your own private Discord channel.</p>
+          <p>Every BEAM student gets their own private Discord channel, not a shared group chat where questions get lost. Drop a photo of your working or ask a concept question any time. A tutor responds directly to you, usually within the hour, always before the next morning.</p>
+        </div>
+      </div>
+      <div class="why-card" data-why="5">
+        <div class="why-card-num">05</div>
+        <div class="why-card-body">
+          <h3>A diagnostic worth keeping.</h3>
+          <p class="why-tagline">4 personalised documents from day one.</p>
+          <p>Your free trial produces a full progress report, custom targeted worksheet, answer key, and worked solutions. All yours permanently, even if you decide not to continue. No other tutoring centre offers this. It's a commitment to earning your trust before your money.</p>
+        </div>
+      </div>
+      <div class="why-card" data-why="6">
+        <div class="why-card-num">06</div>
+        <div class="why-card-body">
+          <h3>Real sessions. Not just small ones.</h3>
+          <p class="why-tagline">Tutors who know every student by name.</p>
+          <p>Our sessions run small enough that every tutor knows every student's name, progress, and weak spots before the lesson starts. There's no slipping through the cracks. When something doesn't improve, we adapt before the next session, not at the next parent-teacher meeting.</p>
+        </div>
+      </div>
+    </div>
+    </div><!-- /why-carousel-viewport -->
+    <div class="why-progress-row">
+      <button class="why-btn" id="whyPrev" aria-label="Previous card">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="why-counter" id="whyCounter">1 / 6</span>
+      <button class="why-btn" id="whyNext" aria-label="Next card">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="why-progress-bar-wrap">
+        <div class="why-progress-bar-fill" id="whyProgressBar"></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- GRADE TRANSFORMATION -->
+<!-- GRADE TRANSFORMATION — 50/50 SPLIT -->
 <div id="grade-transform">
-  <div class="gt-grid">
+  <!-- LEFT PANEL: classroom photo + content -->
+  <div class="gt-left-panel">
     <div class="gt-left rv">
-      <div class="gt-tag">The BEAM Effect</div>
-      <h2>Real students. Real results.</h2>
-      <p>The average BEAM student improves by 21 marks in their first term. Every result below belongs to a real student whose progress we tracked, topic by topic.</p>
-      <a href="#tutors" class="btn btn-wo">See Our Tutors →</a>
+      <div class="gt-tag">The BEAM Difference</div>
+      <h2>Small groups.<br>Every student seen.</h2>
+      <p>Our classes are intentionally small. Every tutor knows every student's name, their weak topics, and what tripped them up last session — not from a spreadsheet, but because they sat with them last week.</p>
+      <p style="margin-bottom:28px;margin-top:-4px">No slipping through the cracks. No "doing fine" when you're not.</p>
+      <a href="#tutors" class="btn btn-wo">Meet the tutors →</a>
     </div>
+  </div>
+  <!-- RIGHT PANEL: purple gradient, rings + stats -->
+  <div class="gt-right-panel">
     <div class="rv" id="rings-section">
       <div class="rings-wrap">
         <div class="ring-item">
           <div class="ring-inner">
-            <svg width="90" height="90" viewBox="0 0 90 90">
+            <svg width="110" height="110" viewBox="0 0 90 90">
               <circle cx="45" cy="45" r="35.2" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="8"/>
-              <circle id="ring-before" cx="45" cy="45" r="35.2" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="8"
+              <circle id="ring-before" cx="45" cy="45" r="35.2" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="8"
                 stroke-dasharray="221" stroke-dashoffset="221" stroke-linecap="round"/>
             </svg>
             <div class="ring-text">
@@ -2004,7 +2316,7 @@
         <div class="ring-arrow">→</div>
         <div class="ring-item">
           <div class="ring-after-wrap ring-inner">
-            <svg width="90" height="90" viewBox="0 0 90 90">
+            <svg width="110" height="110" viewBox="0 0 90 90">
               <circle cx="45" cy="45" r="35.2" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="8"/>
               <circle id="ring-after" cx="45" cy="45" r="35.2" fill="none" stroke="white" stroke-width="8"
                 stroke-dasharray="221" stroke-dashoffset="221" stroke-linecap="round"/>
@@ -2021,7 +2333,7 @@
     <div class="gt-stats rv">
       <div><div class="gt-stat-num">21 pts</div><div class="gt-stat-desc">average mark improvement in first term</div></div>
       <div><div class="gt-stat-num">95%</div><div class="gt-stat-desc">of students see measurable improvement</div></div>
-      <div><div class="gt-stat-num">Topic-by-topic</div><div class="gt-stat-desc">results tracked, not just overall percentages</div></div>
+      <div><div class="gt-stat-num">Topic-by-topic</div><div class="gt-stat-desc">results tracked, never just a percentage</div></div>
     </div>
   </div>
 </div>
@@ -2244,17 +2556,6 @@
   </div>
 </section>
 
-<!-- CLASSROOM PHOTO STRIP -->
-<div id="classroom-strip">
-  <img src="images/teaching.jpg" alt="Students in a BEAM Academy class">
-  <div id="classroom-strip-overlay">
-    <div class="classroom-quote rv">
-      <div class="section-tag">Inside the Classroom</div>
-      <h2>Small groups.<br>Every student seen.</h2>
-      <p>BEAM sessions are kept intentionally small so every tutor knows every student's name, progress, and weak spots before the lesson starts. No one slips through the cracks.</p>
-    </div>
-  </div>
-</div>
 
 <!-- STATS STRIP -->
 <div id="stats-strip">
@@ -2288,23 +2589,31 @@
     <div class="steps-grid">
       <div class="step-card rv rv-d1">
         <div class="step-num">1</div>
-        <h3>Free Trial Lesson</h3>
-        <p>Join a real class at zero cost. No payment, no obligation. You keep the diagnostic documents regardless.</p>
+        <div class="step-body">
+          <h3>Free Trial Lesson</h3>
+          <p>Join a real class at zero cost. No payment, no obligation. You keep the diagnostic documents regardless.</p>
+        </div>
       </div>
       <div class="step-card rv rv-d2">
         <div class="step-num">2</div>
-        <h3>Diagnostic &amp; 4 Documents</h3>
-        <p>A full progress report, custom worksheet, answer key, and worked solutions built from your results. All yours to keep.</p>
+        <div class="step-body">
+          <h3>Diagnostic &amp; 4 Documents</h3>
+          <p>A full progress report, custom worksheet, answer key, and worked solutions built from your results. All yours to keep.</p>
+        </div>
       </div>
       <div class="step-card rv rv-d3">
         <div class="step-num">3</div>
-        <h3>Targeted Weekly Practice</h3>
-        <p>Sessions driven by your personal dashboard, focused on the specific topics costing you marks.</p>
+        <div class="step-body">
+          <h3>Targeted Weekly Practice</h3>
+          <p>Sessions driven by your personal dashboard, focused on the specific topics costing you marks.</p>
+        </div>
       </div>
       <div class="step-card rv rv-d4">
         <div class="step-num">4</div>
-        <h3>Consistent Mark Improvement</h3>
-        <p>Regular progress reviews. When something improves, we double down. When a new gap appears, we adapt immediately.</p>
+        <div class="step-body">
+          <h3>Consistent Mark Improvement</h3>
+          <p>Regular progress reviews. When something improves, we double down. When a new gap appears, we adapt immediately.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -2313,12 +2622,53 @@
 <!-- PORTAL PREVIEW -->
 <section id="portal-preview">
   <div class="container">
-    <div class="rv text-center">
-      <div class="section-tag">Student Portal</div>
-      <h2 class="section-title">Your child's personal learning hub.</h2>
-      <p class="section-sub">Every BEAM student gets full portal access from lesson one: a live dashboard, custom worksheets, past paper marking, and a private Discord channel.</p>
-    </div>
-    <div class="portal-mockup-wrap rv">
+    <div class="portal-split">
+      <div class="portal-split-left rv">
+        <div class="section-tag">Student Portal</div>
+        <h2 class="section-title">Your child's personal learning hub.</h2>
+        <p class="section-sub">Full portal access from lesson one.</p>
+        <div class="portal-feat-list">
+          <div class="portal-feat">
+            <div class="portal-feat-icon">
+              <svg viewBox="0 0 16 16" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13L5 8 8 10 11 5 14 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="portal-feat-text">
+              <h4>Live Performance Dashboard</h4>
+              <p>Topic-by-topic scores updated after every session — not just an overall percentage.</p>
+            </div>
+          </div>
+          <div class="portal-feat">
+            <div class="portal-feat-icon">
+              <svg viewBox="0 0 16 16" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="1" width="12" height="14" rx="1.5"/><path d="M5 5.5h6M5 8h4M5 10.5h5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="portal-feat-text">
+              <h4>Custom Worksheets</h4>
+              <p>Built from your diagnostic results — practise exactly what needs work.</p>
+            </div>
+          </div>
+          <div class="portal-feat">
+            <div class="portal-feat-icon">
+              <svg viewBox="0 0 16 16" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h7l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M10 2v3h3M5 8h6M5 10.5h4" stroke-linecap="round"/></svg>
+            </div>
+            <div class="portal-feat-text">
+              <h4>Past Paper Marking</h4>
+              <p>Submit past papers, get marked with detailed worked solutions.</p>
+            </div>
+          </div>
+          <div class="portal-feat">
+            <div class="portal-feat-icon">
+              <svg viewBox="0 0 16 16" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v7a1 1 0 01-1 1H9l-3 2v-2H3a1 1 0 01-1-1V3z"/></svg>
+            </div>
+            <div class="portal-feat-text">
+              <h4>Private Q&amp;A Channel</h4>
+              <p>Ask questions anytime. A tutor responds directly to you, usually within the hour.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="rv rv-d1">
+    <div class="portal-mockup-wrap">
       <div class="mock-chrome">
         <div class="mock-dots">
           <div class="mock-dot mock-dot-r"></div>
@@ -2398,9 +2748,202 @@
         </div>
       </div>
     </div>
-    <div class="text-center" style="margin-top:32px">
-      <a href="beam-portal.html" class="btn btn-p btn-magnetic" style="font-size:1.05rem;padding:16px 36px">Explore the Full Portal Experience →</a>
+      <div class="text-center" style="margin-top:24px">
+        <a href="beam-portal.html" class="btn btn-p btn-magnetic" style="font-size:.95rem;padding:14px 28px">Explore the Full Portal →</a>
+      </div>
+      </div><!-- /right col -->
+    </div><!-- /portal-split -->
+  </div><!-- /container -->
+</section>
+
+<!-- TRAJECTORY CHART -->
+<section id="trajectory">
+  <div class="traj-split">
+
+    <!-- LEFT: dark chart card -->
+    <div class="traj-chart-panel rv">
+      <div class="traj-chart-card">
+        <div class="traj-svg-wrap">
+          <svg class="traj-svg" viewBox="0 0 980 490" preserveAspectRatio="xMidYMid meet" id="trajSvg">
+            <defs>
+              <linearGradient id="beamGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.22"/>
+                <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Grid lines -->
+            <line class="traj-grid" x1="80" y1="75"  x2="945" y2="75"/>
+            <line class="traj-grid" x1="80" y1="168" x2="945" y2="168"/>
+            <line class="traj-grid" x1="80" y1="261" x2="945" y2="261"/>
+            <line class="traj-grid" x1="80" y1="354" x2="945" y2="354"/>
+
+            <!-- Phase separator at Term Begins -->
+            <line x1="272" y1="48" x2="272" y2="410"
+              stroke="rgba(255,255,255,.18)" stroke-width="1.5" stroke-dasharray="6 5"/>
+
+            <!-- Axes -->
+            <line class="traj-axis" x1="80" y1="48" x2="80" y2="410"/>
+            <line class="traj-axis" x1="80" y1="410" x2="950" y2="410"/>
+
+            <!-- Y-axis label -->
+            <text font-family="Plus Jakarta Sans, sans-serif" font-size="11"
+              fill="rgba(255,255,255,.38)" transform="rotate(-90)" x="-229" y="50" text-anchor="middle">Exam Readiness</text>
+            <text class="traj-y-label" x="73" y="73">High</text>
+            <text class="traj-y-label" x="73" y="408">Low</text>
+
+            <!-- X-axis tick labels -->
+            <text class="traj-label" x="80"  y="428" text-anchor="middle">3 wks</text>
+            <text class="traj-label" x="80"  y="439" text-anchor="middle">prior</text>
+            <text class="traj-label" x="148" y="428" text-anchor="middle">-2</text>
+            <text class="traj-label" x="215" y="428" text-anchor="middle">-1</text>
+            <text class="traj-label" x="272" y="428" text-anchor="middle" fill="rgba(255,255,255,.7)" font-weight="600">Term</text>
+            <text class="traj-label" x="272" y="439" text-anchor="middle" fill="rgba(255,255,255,.7)" font-weight="600">Begins</text>
+            <text class="traj-label" x="355" y="428" text-anchor="middle">1</text>
+            <text class="traj-label" x="438" y="428" text-anchor="middle">2</text>
+            <text class="traj-label" x="521" y="428" text-anchor="middle">3</text>
+            <text class="traj-label" x="604" y="428" text-anchor="middle">4</text>
+            <text class="traj-label" x="687" y="428" text-anchor="middle">5</text>
+            <text class="traj-label" x="770" y="428" text-anchor="middle">6</text>
+            <text class="traj-label" x="920" y="428" text-anchor="middle" fill="rgba(255,255,255,.7)" font-weight="600">Exam</text>
+            <text class="traj-label" x="920" y="439" text-anchor="middle" fill="rgba(255,255,255,.7)" font-weight="600">Week</text>
+
+            <!-- Phase labels -->
+            <text x="176" y="470" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif"
+              font-size="10" fill="rgba(255,255,255,.28)" letter-spacing="3">HOLIDAY</text>
+            <text x="600" y="470" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif"
+              font-size="10" fill="rgba(255,255,255,.28)" letter-spacing="3">SCHOOL TERM</text>
+
+            <!-- ══ AVERAGE STUDENT PATH — Story arc ══
+                 Starts very low at Term Begins. Small hope in wk 1-2.
+                 Slow grind wk 2-4. Big crisis/dip wk 5.
+                 Panic cramming recovery wk 6. Ends much lower than BEAM. -->
+            <path class="traj-avg-path" id="trajAvg"
+              d="M 272,375
+                 L 308,356 L 340,364 L 372,350 L 405,360
+                 L 432,352 L 460,362 L 488,355 L 515,365
+                 L 545,372 L 575,378 L 608,384 L 635,388
+                 L 658,390 L 680,384
+                 L 712,366 L 742,355 L 768,363 L 800,347
+                 L 832,356 L 862,340 L 892,348 L 920,330"/>
+
+            <!-- "i might as well just drop this..." — faint dashed threshold at week 5 crisis -->
+            <line x1="568" y1="392" x2="710" y2="392"
+              stroke="rgba(255,255,255,.14)" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="638" y="404" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif"
+              font-size="9" font-style="italic" font-weight="500"
+              fill="rgba(255,255,255,.24)">i might as well just drop this...</text>
+
+            <!-- Speech bubbles — concentrated at exam end, Catalyst-style -->
+            <text class="traj-comment" x="716" y="339" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif"
+              font-size="9.5" font-style="italic" fill="rgba(255,255,255,.46)">I'm so cooked..</text>
+            <text class="traj-comment" x="772" y="326" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif"
+              font-size="9.5" font-style="italic" fill="rgba(255,255,255,.38)">why isn't anything making sense??</text>
+            <text class="traj-comment" x="834" y="316" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif"
+              font-size="9.5" font-style="italic" fill="rgba(255,255,255,.30)">been staring at this for 3 hours</text>
+            <text class="traj-comment" x="878" y="306" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif"
+              font-size="9.5" font-style="italic" fill="rgba(255,255,255,.40)">silly mistakes everywhere</text>
+            <text class="traj-comment" x="888" y="296" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif"
+              font-size="9.5" font-style="italic" fill="rgba(255,255,255,.26)">please just let me pass</text>
+
+            <!-- Avg endpoint label -->
+            <text x="930" y="336" text-anchor="start" font-family="Plus Jakarta Sans, sans-serif"
+              font-size="10" font-weight="600" fill="rgba(255,255,255,.36)">AVERAGE</text>
+            <text x="930" y="348" text-anchor="start" font-family="Plus Jakarta Sans, sans-serif"
+              font-size="10" font-weight="600" fill="rgba(255,255,255,.36)">STUDENT</text>
+
+            <!-- ══ BEAM AREA FILL ══ -->
+            <path class="traj-beam-area" id="trajBeamArea"
+              d="M 80,375 C 115,342 148,307 215,265 C 248,242 262,232 272,222
+                 C 328,187 388,153 438,123 C 492,93 548,75 604,65
+                 C 645,58 680,54 720,52 C 768,50 840,49 920,48
+                 L 920,410 L 80,410 Z"/>
+
+            <!-- ══ BEAM PATH ══ -->
+            <path class="traj-beam-path" id="trajBeam"
+              d="M 80,375 C 115,342 148,307 215,265 C 248,242 262,232 272,222
+                 C 328,187 388,153 438,123 C 492,93 548,75 604,65
+                 C 645,58 680,54 720,52 C 768,50 840,49 920,48"/>
+
+            <!-- BEAM endpoint label -->
+            <text x="930" y="56" text-anchor="start" font-family="Plus Jakarta Sans, sans-serif"
+              font-size="11" font-weight="700" fill="#C4B5FD">BEAM</text>
+
+            <!-- "that was EASY?" thought bubble near BEAM endpoint -->
+            <ellipse cx="882" cy="26" rx="54" ry="16"
+              fill="rgba(139,92,246,.22)" stroke="rgba(167,139,250,.55)" stroke-width="1"/>
+            <circle cx="850" cy="43" r="4" fill="rgba(167,139,250,.42)"/>
+            <circle cx="856" cy="50" r="2.5" fill="rgba(167,139,250,.32)"/>
+            <text x="882" y="31" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif"
+              font-size="10.5" font-weight="700" fill="#C4B5FD">that was EASY?</text>
+
+            <!-- ① Holiday — diagnose week -->
+            <g class="traj-callout" id="callout1" data-num="1">
+              <circle cx="156" cy="302" r="13" fill="#7C3AED" stroke="white" stroke-width="2.5"/>
+              <text x="156" y="307" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif"
+                font-size="12" font-weight="800" fill="white">1</text>
+            </g>
+
+            <!-- ② Week 2 — all content done -->
+            <g class="traj-callout" id="callout2" data-num="2">
+              <circle cx="438" cy="123" r="13" fill="#7C3AED" stroke="white" stroke-width="2.5"/>
+              <text x="438" y="128" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif"
+                font-size="12" font-weight="800" fill="white">2</text>
+            </g>
+
+            <!-- ③ Week 4 — revise & refine -->
+            <g class="traj-callout" id="callout3" data-num="3">
+              <circle cx="604" cy="65" r="13" fill="#7C3AED" stroke="white" stroke-width="2.5"/>
+              <text x="604" y="70" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif"
+                font-size="12" font-weight="800" fill="white">3</text>
+            </g>
+
+            <!-- Endpoint dot on BEAM line -->
+            <circle class="traj-dot" id="trajDot" cx="920" cy="48" r="6"/>
+          </svg>
+        </div>
+      </div>
     </div>
+
+    <!-- RIGHT: heading + milestone cards -->
+    <div class="traj-content-panel rv rv-d1">
+      <h2 class="section-title">BEAM vs<br>Average Student</h2>
+      <p class="section-sub">Every BEAM student follows the same 3-step roadmap — and ends up months ahead of the rest of the class.</p>
+      <div class="traj-legend">
+        <div class="traj-legend-item">
+          <div class="traj-legend-line beam-line"></div>
+          BEAM student
+        </div>
+        <div class="traj-legend-item">
+          <div class="traj-legend-line avg-dash"></div>
+          Average student
+        </div>
+      </div>
+      <div class="traj-milestones">
+        <div class="traj-milestone rv rv-d1" data-num="1">
+          <div class="traj-m-num">1</div>
+          <div class="traj-m-body">
+            <h4>Diagnose every weak spot in the holiday</h4>
+            <p>BEAM custom worksheets pinpoint exactly where to focus — before term even begins.</p>
+          </div>
+        </div>
+        <div class="traj-milestone rv rv-d2" data-num="2">
+          <div class="traj-m-num">2</div>
+          <div class="traj-m-body">
+            <h4>Complete ALL content by Week 2–3</h4>
+            <p>Finish the entire HSC syllabus weeks before your classmates — the rest of term is pure revision.</p>
+          </div>
+        </div>
+        <div class="traj-milestone rv rv-d3" data-num="3">
+          <div class="traj-m-num">3</div>
+          <div class="traj-m-body">
+            <h4>Revise &amp; refine all the way to exam day</h4>
+            <p>Past papers, Discord Q&amp;A, and exam technique with tutors who aced the same exams.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -3391,6 +3934,165 @@
   }, { threshold: 0.3 });
   document.querySelectorAll('[data-count]').forEach(el => counterObs.observe(el));
 
+  // ═══ PROOF ROW — EDGE-REVEAL OBSERVER ═══
+  (function() {
+    const row = document.getElementById('proof-row');
+    if (!row) return;
+    const cards = row.querySelectorAll('.proof-card');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        cards.forEach(c => c.classList.toggle('visible', e.isIntersecting));
+      });
+    }, { threshold: 0.3 });
+    obs.observe(row);
+  })();
+
+  // ═══ TRAJECTORY CHART — ANIMATED SVG ═══
+  (function() {
+    const section  = document.getElementById('trajectory');
+    if (!section) return;
+    const beamPath = document.getElementById('trajBeam');
+    const avgPath  = document.getElementById('trajAvg');
+    const beamArea = document.getElementById('trajBeamArea');
+    const dot      = document.getElementById('trajDot');
+    const callouts = [
+      document.getElementById('callout1'),
+      document.getElementById('callout2'),
+      document.getElementById('callout3'),
+    ];
+    const milestones = Array.from(section.querySelectorAll('.traj-milestone'));
+    const comments   = Array.from(section.querySelectorAll('.traj-comment'));
+    const gridLines  = Array.from(section.querySelectorAll('.traj-grid'));
+    const axes       = Array.from(section.querySelectorAll('.traj-axis'));
+
+    // Spring-bounce pop-in for a callout circle
+    function popCallout(c, delay) {
+      if (!c) return;
+      setTimeout(() => {
+        // Set scale(0), opacity visible (no transition yet)
+        c.style.cssText = 'opacity:1; transform:scale(0); transition:none;';
+        // Double-RAF: first frame commits scale(0) state, second applies spring transition
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          c.style.transition = 'transform .52s cubic-bezier(.34,1.56,.64,1)';
+          c.style.transform  = 'scale(1)';
+          // After pop completes: hand full control back to CSS (enables hover)
+          setTimeout(() => { c.style.cssText = ''; c.classList.add('shown'); }, 580);
+        }));
+      }, delay);
+    }
+
+    let triggered = false;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting || triggered) return;
+        triggered = true;
+        obs.disconnect();
+
+        // ── 1. Initialise paths NOW (layout guaranteed, getTotalLength() is accurate) ──
+        // CRITICAL: suppress CSS transition during init so 9999→len doesn't animate visibly
+        [beamPath, avgPath].forEach(p => {
+          if (!p) return;
+          const len = p.getTotalLength() || 2000;
+          p.style.transition       = 'none';   // freeze any transition
+          p.style.strokeDasharray  = len;
+          p.style.strokeDashoffset = len;       // hide path (offset = full length)
+          p.style.opacity          = '1';       // make element visible (but path still hidden)
+        });
+
+        // Force layout: browser commits hidden state as the "from" baseline
+        void section.getBoundingClientRect();
+
+        // Restore CSS transitions (remove inline override) — future changes will animate
+        [beamPath, avgPath].forEach(p => { if (p) p.style.transition = ''; });
+
+        // ── 2. Axes & grid lines stagger in ──
+        axes.forEach((ax, i)     => setTimeout(() => ax.classList.add('shown'), i * 130));
+        gridLines.forEach((gl, i) => setTimeout(() => gl.classList.add('shown'), 90 + i * 80));
+
+        // ── 3. BEAM path draws (CSS transition handles animation) ──
+        setTimeout(() => { if (beamPath) beamPath.style.strokeDashoffset = '0'; }, 300);
+
+        // ── 4. Avg path draws ──
+        setTimeout(() => { if (avgPath) avgPath.style.strokeDashoffset = '0'; }, 500);
+
+        // ── 5. Area fill fades in ──
+        setTimeout(() => { if (beamArea) beamArea.classList.add('shown'); }, 1350);
+
+        // ── 6. Callout circles spring in ──
+        popCallout(callouts[0], 780);
+        popCallout(callouts[1], 1120);
+        popCallout(callouts[2], 1500);
+
+        // ── 7. Endpoint dot appears + pulses ──
+        setTimeout(() => { if (dot) { dot.classList.add('shown'); setTimeout(() => dot.classList.add('pulsing'), 500); } }, 1980);
+
+        // ── 8. "I'm so cooked" comments fade in left-to-right ──
+        comments.forEach((cm, i) => setTimeout(() => cm.classList.add('shown'), 1950 + i * 230));
+      });
+    }, { threshold: 0.1 });
+
+    obs.observe(section);
+
+    // ── Hover: numbered circles ↔ milestone cards ──
+    function setActive(idx) {
+      callouts.forEach((c, j)  => { if (c) c.classList.toggle('traj-c-active', j === idx); });
+      milestones.forEach((m, j) => m.classList.toggle('traj-m-active', j === idx));
+    }
+    function clearActive() {
+      callouts.forEach(c  => { if (c) c.classList.remove('traj-c-active'); });
+      milestones.forEach(m => m.classList.remove('traj-m-active'));
+    }
+
+    callouts.forEach((c, i) => {
+      if (!c) return;
+      c.addEventListener('mouseenter', () => setActive(i));
+      c.addEventListener('mouseleave', clearActive);
+    });
+    milestones.forEach((m, i) => {
+      m.addEventListener('mouseenter', () => setActive(i));
+      m.addEventListener('mouseleave', clearActive);
+    });
+
+  })();
+
+  // ═══ TRAJECTORY EXPAND ═══
+  (function() {
+    var card = document.querySelector('#trajectory .traj-chart-card');
+    function getOverlay() { return document.getElementById('traj-expand'); }
+    function getInner()   { return document.getElementById('trajExpandInner'); }
+    function openExpand() {
+      var overlay = getOverlay(), inner = getInner();
+      if (!overlay || !inner) return;
+      var svgWrap = document.querySelector('#trajectory .traj-svg-wrap');
+      if (!svgWrap) return;
+      var clone = svgWrap.cloneNode(true);
+      inner.innerHTML = '<button class="traj-expand-close" aria-label="Close">\u00d7</button>';
+      inner.querySelector('.traj-expand-close').addEventListener('click', closeExpand);
+      inner.appendChild(clone);
+      overlay.style.display = 'flex';
+      requestAnimationFrame(function() { overlay.classList.add('open'); });
+      document.body.style.overflow = 'hidden';
+    }
+    function closeExpand() {
+      var overlay = getOverlay();
+      if (!overlay) return;
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      setTimeout(function() { overlay.style.display = 'none'; }, 320);
+    }
+    if (card) card.addEventListener('click', openExpand);
+    document.addEventListener('click', function(e) {
+      var ov = getOverlay();
+      if (ov && e.target === ov) { closeExpand(); }
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        var ov = getOverlay();
+        if (ov && ov.classList.contains('open')) { closeExpand(); }
+      }
+    });
+  })();
+
   // ═══ PRICING TABS ═══
   function setTab(id, btn) {
     document.querySelectorAll('.price-tab').forEach(t => t.classList.remove('active'));
@@ -3550,68 +4252,135 @@
     onScroll();
   })();
 
-  // ═══ WHY BEAM HORIZONTAL SCROLL — DRAG + DOTS ═══
+  // ═══ WHY BEAM — INFINITE BUTTON CAROUSEL ═══
   (function() {
-    const track = document.getElementById('whyTrack');
-    const dotsEl = document.getElementById('whyDots');
-    if (!track || !dotsEl) return;
-    const dots = dotsEl.querySelectorAll('.why-dot');
-    const cards = track.querySelectorAll('.why-card');
-    const CARD_COUNT = cards.length;
-    const prevBtn = document.getElementById('whyPrev');
-    const nextBtn = document.getElementById('whyNext');
-    let curIdx = 0;
-    let scrollTimer = null;
-    let programmatic = false;
+    const section  = document.getElementById('why');
+    const viewport = document.getElementById('whyViewport');
+    const slider   = document.getElementById('whyTrack');
+    const pb       = document.getElementById('whyProgressBar');
+    const counter  = document.getElementById('whyCounter');
+    const prevBtn  = document.getElementById('whyPrev');
+    const nextBtn  = document.getElementById('whyNext');
+    if (!section || !slider || !viewport) return;
 
-    function setIdx(idx) {
-      curIdx = Math.max(0, Math.min(idx, CARD_COUNT - 1));
-      dots.forEach((d, i) => d.classList.toggle('active', i === curIdx));
-      if (prevBtn) prevBtn.disabled = curIdx <= 0;
-      if (nextBtn) nextBtn.disabled = curIdx >= CARD_COUNT - 1;
+    // ── Build clone buffer: 3 clones each side so edges stay filled ──
+    // Layout: [clone(N-3)..clone(N-1) | card0..cardN-1 | clone0..clone2]
+    const origCards = Array.from(slider.querySelectorAll('.why-card'));
+    const NUM    = origCards.length;
+    const BUFFER = 3; // clones on each side
+
+    // Prepend last BUFFER real cards as clones (in order, so they appear left→right)
+    for (let i = 0; i < BUFFER; i++) {
+      const src   = origCards[(NUM - BUFFER + i + NUM) % NUM];
+      const clone = src.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true'); clone.style.pointerEvents = 'none';
+      slider.insertBefore(clone, origCards[0]);
+    }
+    // Append first BUFFER real cards as clones
+    for (let i = 0; i < BUFFER; i++) {
+      const clone = origCards[i].cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true'); clone.style.pointerEvents = 'none';
+      slider.appendChild(clone);
     }
 
-    function scrollToIdx(idx) {
-      setIdx(idx);
-      programmatic = true;
-      track.scrollTo({ left: cards[curIdx].offsetLeft - 4, behavior: 'smooth' });
-      // Re-enable scroll sync after animation settles
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(() => { programmatic = false; }, 600);
+    const slides = Array.from(slider.children); // total = NUM + 2*BUFFER
+
+    // vIdx BUFFER..BUFFER+NUM-1 are the real cards
+    let vIdx   = BUFFER; // starts on real card 0
+    let locked = false;
+
+    const GAP = 24;
+    function cardW() { return origCards[0].offsetWidth || 360; }
+    // Map any slide index to 0-based real card index
+    function realOf(v) { return ((v - BUFFER) % NUM + NUM) % NUM; }
+
+    function centerOffset(v) {
+      return (viewport.offsetWidth / 2) - (cardW() / 2) - v * (cardW() + GAP);
     }
 
-    // Dots click
-    dots.forEach((dot, i) => dot.addEventListener('click', () => scrollToIdx(i)));
+    function applyClasses() {
+      const rCur = realOf(vIdx);
+      slides.forEach((s, v) => {
+        s.classList.remove('active', 'adjacent', 'secondary', 'far');
+        const rS = realOf(v);
+        const d  = Math.min(((rS - rCur + NUM) % NUM), ((rCur - rS + NUM) % NUM));
+        if (d === 0)      s.classList.add('active');
+        else if (d === 1) s.classList.add('adjacent');
+        else if (d === 2) s.classList.add('secondary');
+        else              s.classList.add('far');
+      });
+    }
 
-    // Arrow buttons
-    if (prevBtn) prevBtn.addEventListener('click', () => scrollToIdx(curIdx - 1));
-    if (nextBtn) nextBtn.addEventListener('click', () => scrollToIdx(curIdx + 1));
+    function setPos(v, animate) {
+      if (!animate) {
+        slider.style.transition = 'none';
+        slider.style.transform  = `translateX(${centerOffset(v)}px)`;
+        requestAnimationFrame(() => { slider.style.transition = ''; });
+      } else {
+        slider.style.transform = `translateX(${centerOffset(v)}px)`;
+      }
+      applyClasses();
+      const r = realOf(v);
+      if (pb)      pb.style.width = (NUM > 1 ? r / (NUM - 1) * 100 : 0) + '%';
+      if (counter) counter.textContent = (r + 1) + ' / ' + NUM;
+    }
 
-    // Sync curIdx when user drags/swipes (not during programmatic scroll)
-    track.addEventListener('scroll', () => {
-      if (programmatic) return;
-      const maxScroll = track.scrollWidth - track.clientWidth;
-      const idx = Math.round((track.scrollLeft / (maxScroll || 1)) * (CARD_COUNT - 1));
-      setIdx(idx);
-    }, { passive: true });
+    function go(dir) {
+      if (locked) return;
+      locked = true;
+      vIdx += dir;
+      setPos(vIdx, true);
 
-    // Drag to scroll
-    let isDown = false, startX, scrollAtStart;
-    track.addEventListener('mousedown', e => {
-      isDown = true;
-      programmatic = false;
-      startX = e.pageX - track.offsetLeft;
-      scrollAtStart = track.scrollLeft;
+      setTimeout(() => {
+        // Silently teleport if we're now in a clone zone
+        if (vIdx < BUFFER) {
+          vIdx += NUM;
+          setPos(vIdx, false);
+        } else if (vIdx >= BUFFER + NUM) {
+          vIdx -= NUM;
+          setPos(vIdx, false);
+        }
+        setTimeout(() => { locked = false; }, 30);
+      }, 530);
+    }
+
+    // Buttons
+    prevBtn && prevBtn.addEventListener('click', () => go(-1));
+    nextBtn && nextBtn.addEventListener('click', () => go(1));
+
+    // Click adjacent cards to navigate one step
+    slides.forEach((s, v) => {
+      s.addEventListener('click', () => {
+        if (locked || s.classList.contains('active')) return;
+        const rT = realOf(v), rC = realOf(vIdx);
+        if (rT === rC) return;
+        const fwd = ((rT - rC + NUM) % NUM);
+        const bwd = ((rC - rT + NUM) % NUM);
+        go(fwd <= bwd ? 1 : -1);
+      });
     });
-    window.addEventListener('mousemove', e => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - track.offsetLeft;
-      track.scrollLeft = scrollAtStart - (x - startX);
-    });
-    window.addEventListener('mouseup', () => { isDown = false; });
 
-    setIdx(0);
+    // Touch swipe
+    let touchX = 0;
+    slider.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+    slider.addEventListener('touchend',   e => {
+      const dx = touchX - e.changedTouches[0].clientX;
+      if (Math.abs(dx) > 44) go(dx > 0 ? 1 : -1);
+    });
+
+    // Mouse drag
+    let dragX = 0, dragging = false;
+    slider.addEventListener('mousedown', e => { dragging = true; dragX = e.clientX; e.preventDefault(); });
+    window.addEventListener('mouseup',   e => {
+      if (!dragging) return; dragging = false;
+      const dx = dragX - e.clientX;
+      if (Math.abs(dx) > 44) go(dx > 0 ? 1 : -1);
+    });
+
+    window.addEventListener('resize', () => setPos(vIdx, false), { passive: true });
+
+    // Init
+    setPos(vIdx, false);
   })();
 
   // ═══ TRIAL PANEL ═══
@@ -3742,8 +4511,9 @@
     const brand    = document.getElementById('hero-brand');
     const line1    = document.getElementById('hero-line-1');
     const line2    = document.getElementById('hero-line-2');
-    const btn      = document.querySelector('.hero-anim-btn');
+    const btn      = document.querySelector('.hero-btns');
     const hint     = document.getElementById('scroll-hint');
+    const floatCards = document.querySelectorAll('.hero-stat-card');
 
     // Show logo in overlay
     requestAnimationFrame(() => {
@@ -3760,6 +4530,7 @@
         setTimeout(() => line2.classList.add('in'), 300);
         setTimeout(() => btn.classList.add('in'),   480);
         setTimeout(() => hint.classList.add('in'),  700);
+        floatCards.forEach((c, i) => setTimeout(() => c.classList.add('in'), 600 + i * 120));
       }, 800);
     }, 1200);
   })();
@@ -3933,5 +4704,13 @@
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLegal(); });
 </script>
+
+<!-- TRAJECTORY EXPAND OVERLAY -->
+<div id="traj-expand" role="dialog" aria-modal="true" aria-label="Expanded graph">
+  <div class="traj-expand-inner" id="trajExpandInner">
+    <button class="traj-expand-close" id="trajExpandClose" aria-label="Close">✕</button>
+    <!-- SVG injected by JS -->
+  </div>
+</div>
 </body>
 </html>

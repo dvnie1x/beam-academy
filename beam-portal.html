@@ -207,6 +207,13 @@ nav.scrolled {
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+.sc-portal-title p {
+  margin-top: 10px;
+  font-size: .92rem;
+  color: rgba(255,255,255,.52);
+  font-weight: 400;
+  letter-spacing: 0;
+}
 
 /* ═══ THE PORTAL MOCKUP ═══ */
 .sc-mockup-wrap {
@@ -706,8 +713,9 @@ footer { background: #1E1035; padding: 64px 48px 0; }
 
     <!-- Title label (visible at start) -->
     <div class="sc-portal-title" id="scTitle">
-      <div class="badge">Student Portal · Exclusive Access</div>
+
       <h1>The BEAM Portal</h1>
+      <p>Full access from your very first lesson. No setup required.</p>
     </div>
 
     <!-- ═══ THE PORTAL MOCKUP ═══ -->
@@ -947,7 +955,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     <div class="sc-pin" id="pin-portal">
       <div class="sc-pin-inner">
         <div class="sc-pin-title">The BEAM Portal.</div>
-        <div class="sc-pin-desc">Scroll — or use <kbd style="font-family:monospace;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);padding:1px 5px;border-radius:3px;font-size:.7rem">Space</kbd> / <kbd style="font-family:monospace;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);padding:1px 5px;border-radius:3px;font-size:.7rem">↓</kbd> — to tour what every BEAM student gets from lesson one.</div>
+        <div class="sc-pin-desc">Scroll — or use <kbd style="font-family:monospace;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);padding:1px 5px;border-radius:3px;font-size:.7rem">Space</kbd> / <kbd style="font-family:monospace;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);padding:1px 5px;border-radius:3px;font-size:.7rem">↓</kbd> — to take the tour.</div>
       </div>
     </div>
 
@@ -985,7 +993,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     <!-- Pin: worksheets overview -->
     <div class="sc-pin" id="pin-worksheets">
       <div class="sc-pin-inner">
-        
+        <span class="sc-pin-icon">📝</span>
         <span class="sc-pin-tag">Custom Worksheets</span>
         <div class="sc-pin-title">Built for you, not everyone.</div>
         <div class="sc-pin-desc">Every worksheet is built from your personal diagnostic data, targeting the exact areas you need to work on.</div>
@@ -1006,7 +1014,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     <!-- Pin: search typed trigonometry -->
     <div class="sc-pin" id="pin-typed">
       <div class="sc-pin-inner">
-        
+        <span class="sc-pin-icon">⚡</span>
         <span class="sc-pin-tag">Instant Results</span>
         <div class="sc-pin-title">Your exact topic, right there.</div>
         <div class="sc-pin-desc">Type "trigonometry" and every trig worksheet you've ever been assigned surfaces immediately, ready to download.</div>
@@ -1037,7 +1045,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
     <!-- Pin: results -->
     <div class="sc-pin" id="pin-results">
       <div class="sc-pin-inner">
-        
+        <span class="sc-pin-icon">📊</span>
         <span class="sc-pin-tag">Detailed Results</span>
         <div class="sc-pin-title">Every mistake mapped to a plan.</div>
         <div class="sc-pin-desc">Score by topic, written comments on each wrong answer, and a custom worksheet generated automatically when marking is done.</div>
@@ -1075,7 +1083,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
 <!-- CTA -->
 <div id="portal-cta">
   <div class="inner">
-    <div class="section-tag">Get Started</div>
+
     <h2>Ready to experience it yourself?</h2>
     <p>Every BEAM student gets full portal access from their very first lesson. Book a free trial and log in the same day.</p>
     <div class="cta-btns">
@@ -1440,7 +1448,8 @@ function handleShowcase() {
   const rect = showcase.getBoundingClientRect();
   const scrolled = -rect.top;
   const total = showcase.offsetHeight - window.innerHeight;
-  if (scrolled < 0 || scrolled > total) return;
+  if (scrolled < 0) return;
+  // When scrolled > total, p clamps to 1.0 — KF11 (pin-reveal) still fires correctly
 
   const p = Math.max(0, Math.min(1, scrolled / total));
   const { s, tx, ty, kfIndex } = getTransform(p);
