@@ -889,31 +889,6 @@
     line-height: 1.65;
   }
 
-  /* ═══ STATS STRIP ═══ */
-  #stats-strip { background: var(--p); padding: 56px 48px; }
-  .stats-grid {
-    max-width: 1000px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-  }
-  .stat-block {
-    text-align: center;
-    padding: 28px 20px;
-    border-right: 1px solid rgba(255,255,255,.15);
-  }
-  .stat-block:last-child { border-right: none; }
-  .stat-num {
-    font-family: var(--font-head);
-    font-size: 2.6rem;
-    font-weight: 800;
-    letter-spacing: -.03em;
-    color: white;
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-  .stat-label { font-size: .83rem; color: rgba(255,255,255,.75); line-height: 1.4; }
-
   /* ═══ HOW IT WORKS — 2×2 HORIZONTAL CARDS ═══ */
   #how { background: white; }
   #how .steps-grid { text-align: left; }
@@ -2087,7 +2062,6 @@
     .discord-progress-track { right: 12px; }
     .discord-grid { grid-template-columns: 1fr; gap: 40px; }
     .footer-grid { grid-template-columns: 1fr; gap: 32px; }
-    .stats-grid { grid-template-columns: 1fr 1fr; }
     .tutors-grid { grid-template-columns: 1fr 1fr; }
     .flip-grid { grid-template-columns: 1fr; }
     /* why-card width handled by bento grid */
@@ -2621,28 +2595,6 @@
   </div>
 </section>
 
-
-<!-- STATS STRIP -->
-<div id="stats-strip">
-  <div class="stats-grid">
-    <div class="stat-block rv">
-      <div class="stat-num" data-count="95" data-suffix="%">95%</div>
-      <div class="stat-label">of students improve in their first term</div>
-    </div>
-    <div class="stat-block rv rv-d1">
-      <div class="stat-num">5.0 ★</div>
-      <div class="stat-label">Google Rating from real parents</div>
-    </div>
-    <div class="stat-block rv rv-d2">
-      <div class="stat-num" data-count="21" data-prefix="+" data-suffix=" pts">+21 pts</div>
-      <div class="stat-label">Average improvement per term</div>
-    </div>
-    <div class="stat-block rv rv-d3">
-      <div class="stat-num">&lt; 1hr</div>
-      <div class="stat-label">Typical Discord response time</div>
-    </div>
-  </div>
-</div>
 
 <!-- HOW IT WORKS -->
 <section id="how">
