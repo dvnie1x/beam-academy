@@ -649,6 +649,7 @@ footer { background: #1E1035; padding: 64px 48px 0; }
   display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr;
   gap: 40px; padding-bottom: 48px;
   border-bottom: 1px solid rgba(255,255,255,.06);
+  position: relative;
 }
 .footer-brand { display: flex; flex-direction: column; gap: 12px; }
 .footer-logo {
@@ -682,18 +683,38 @@ footer { background: #1E1035; padding: 64px 48px 0; }
 .footer-contact-item { font-size: .8rem; color: rgba(255,255,255,.4); line-height: 1.45; }
 .footer-contact-item a { color: rgba(255,255,255,.45); text-decoration: none; }
 .footer-contact-item a:hover { color: white; }
-.footer-credit {
-  margin-left: 10px;
-  padding-left: 16px;
-  border-left: 1px solid rgba(255,255,255,.1);
+.footer-credit-block {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border: 1px solid rgba(255,255,255,.1);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  padding: 14px 20px;
 }
-.footer-credit a {
-  display: inline-flex; align-items: center; gap: 5px;
-  color: rgba(255,255,255,.2);
+.footer-credit-block a {
+  display: inline-flex; align-items: center; gap: 10px;
+  color: rgba(255,255,255,.28);
   text-decoration: none;
-  transition: color .2s;
+  font-size: .82rem;
+  letter-spacing: .02em;
+  transition: color .25s;
 }
-.footer-credit a:hover { color: rgba(255,255,255,.45); }
+.footer-credit-block a:hover { color: rgba(255,255,255,.6); }
+.footer-credit-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 7px;
+  flex-shrink: 0;
+  transition: border-color .25s, background .25s;
+}
+.footer-credit-block a:hover .footer-credit-icon {
+  border-color: rgba(255,255,255,.3);
+  background: rgba(255,255,255,.05);
+}
+.footer-credit-label { line-height: 1.25; }
+.footer-credit-label strong { display: block; font-weight: 600; color: rgba(255,255,255,.45); font-size: .88rem; }
 
 .footer-bottom {
   max-width: 1160px; margin: 0 auto; padding: 20px 0;
@@ -1192,13 +1213,26 @@ footer { background: #1E1035; padding: 64px 48px 0; }
         <div class="footer-contact-item">ABN 19 693 809 013</div>
       </div>
     </div>
+    <div class="footer-credit-block">
+      <a href="mailto:gargdaniel07@gmail.com">
+        <span class="footer-credit-icon">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="5 4 1 8 5 12"/>
+            <polyline points="11 4 15 8 11 12"/>
+            <line x1="9" y1="2" x2="7" y2="14"/>
+          </svg>
+        </span>
+        <span class="footer-credit-label">
+          Site by<strong>Daniel Garg</strong>
+        </span>
+      </a>
+    </div>
   </div>
   <div class="footer-bottom">
     <span>© 2025/26 BEAM Academy. All rights reserved.</span>
     <div class="footer-bottom-links">
       <a href="#">Privacy Policy</a>
       <a href="#">Terms &amp; Conditions</a>
-      <span class="footer-credit"><a href="mailto:gargdaniel07@gmail.com"><svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor" style="flex-shrink:0"><path d="M5 0L6.18 3.82 10 5 6.18 6.18 5 10 3.82 6.18 0 5 3.82 3.82Z"/></svg> Site by Daniel Garg</a></span>
     </div>
   </div>
 </footer>
