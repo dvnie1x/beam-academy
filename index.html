@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -9,12 +9,12 @@
 <link rel="apple-touch-icon" href="images/favicon.png">
 <!-- Open Graph / Discord embed -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://beamacademy.info/">
+<meta property="og:url" content="https://beam-academy.vercel.app/">
 <meta property="og:title" content="BEAM Academy | High School Tutoring in Epping, Sydney">
 <meta property="og:description" content="Expert HSC tutoring in Epping, Sydney by BHHS graduates with 95%+ in HSC. Topic tracking, custom worksheets, Discord support. Years 7–12.">
-<meta property="og:image" content="https://beamacademy.info/images/banner.jpg">
+<meta property="og:image" content="https://beam-academy.vercel.app/images/banner.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://beamacademy.info/images/banner.jpg">
+<meta name="twitter:image" content="https://beam-academy.vercel.app/images/banner.jpg">
 <meta name="theme-color" content="#8B74CC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1978,6 +1978,7 @@
     gap: 48px;
     padding-bottom: 56px;
     border-bottom: 1px solid rgba(255,255,255,.08);
+    position: relative;
   }
   .footer-brand { display: flex; flex-direction: column; gap: 14px; }
   .footer-logo {
@@ -2015,17 +2016,41 @@
   .footer-contact-item { font-size: .83rem; color: rgba(255,255,255,.55); line-height: 1.45; }
   .footer-contact-item a { color: rgba(255,255,255,.6); text-decoration: none; }
   .footer-contact-item a:hover { color: white; }
-  .footer-credit {
-    margin-left: 10px;
-    padding-left: 16px;
-    border-left: 1px solid rgba(255,255,255,.1);
+  .footer-credit-block {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border: 1px solid rgba(255,255,255,.1);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 14px 20px;
   }
-  .footer-credit a {
-    display: inline-flex; align-items: center; gap: 5px;
-    color: rgba(255,255,255,.2);
+  .footer-credit-block a {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: rgba(255,255,255,.28);
     text-decoration: none;
-    transition: color .2s;
+    font-size: .82rem;
+    letter-spacing: .02em;
+    transition: color .25s;
   }
+  .footer-credit-block a:hover { color: rgba(255,255,255,.6); }
+  .footer-credit-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 7px;
+    flex-shrink: 0;
+    transition: border-color .25s, background .25s;
+  }
+  .footer-credit-block a:hover .footer-credit-icon {
+    border-color: rgba(255,255,255,.3);
+    background: rgba(255,255,255,.05);
+  }
+  .footer-credit-label { line-height: 1.25; }
+  .footer-credit-label strong { display: block; font-weight: 600; color: rgba(255,255,255,.45); font-size: .88rem; }
+  /* legacy inline credit (kept for beam-portal) */
+  .footer-credit { margin-left: 10px; padding-left: 16px; border-left: 1px solid rgba(255,255,255,.1); }
+  .footer-credit a { display: inline-flex; align-items: center; gap: 5px; color: rgba(255,255,255,.2); text-decoration: none; transition: color .2s; }
   .footer-credit a:hover { color: rgba(255,255,255,.45); }
 
   .footer-bottom {
@@ -3099,7 +3124,7 @@
     </div>
     <div class="tutors-grid">
       <div class="tutor-card rv rv-d1">
-        <img src="https://beamacademy.info/images/chris.jpg" alt="Chris Kim" class="tutor-photo">
+        <img src="tutors/chris.jpg" alt="Chris Kim" class="tutor-photo">
         <div class="tutor-info">
           <div class="tutor-name">Chris Kim <span class="tutor-founder-badge">Co-founder</span></div>
           <div class="tutor-role">Head of Mathematics &amp; Physics</div>
@@ -3113,7 +3138,7 @@
         </div>
       </div>
       <div class="tutor-card rv rv-d2">
-        <img src="https://beamacademy.info/images/taehoon.jpg" alt="Taehoon Kim" class="tutor-photo">
+        <img src="tutors/taehoon.jpg" alt="Taehoon Kim" class="tutor-photo">
         <div class="tutor-info">
           <div class="tutor-name">Taehoon Kim <span class="tutor-founder-badge">Co-founder</span></div>
           <div class="tutor-role">Head of Operations &amp; Admin</div>
@@ -3126,7 +3151,7 @@
         </div>
       </div>
       <div class="tutor-card rv rv-d3">
-        <img src="https://beamacademy.info/images/nathan.jpg" alt="Nathan You" class="tutor-photo">
+        <img src="tutors/nathan.jpg" alt="Nathan You" class="tutor-photo">
         <div class="tutor-info">
           <div class="tutor-name">Nathan You</div>
           <div class="tutor-role">Mathematics Tutor</div>
@@ -3139,7 +3164,7 @@
         </div>
       </div>
       <div class="tutor-card rv rv-d4">
-        <img src="https://beamacademy.info/images/john.jpg" alt="John Park" class="tutor-photo">
+        <img src="tutors/john.jpg" alt="John Park" class="tutor-photo">
         <div class="tutor-info">
           <div class="tutor-name">John Park</div>
           <div class="tutor-role">Tutor</div>
@@ -3152,7 +3177,7 @@
         </div>
       </div>
       <div class="tutor-card rv rv-d5">
-        <img src="https://beamacademy.info/images/soiwon.jpg" alt="Sowon Lee" class="tutor-photo">
+        <img src="tutors/soiwon.jpg" alt="Sowon Lee" class="tutor-photo">
         <div class="tutor-info">
           <div class="tutor-name">Sowon Lee</div>
           <div class="tutor-role">Head of English</div>
@@ -3375,7 +3400,7 @@
                   </div>
                 </div>
                 <div class="dc-msg">
-                  <img src="https://beamacademy.info/images/chris.jpg" alt="Chris" class="dc-avatar" style="object-fit:cover">
+                  <img src="tutors/chris.jpg" alt="Chris" class="dc-avatar" style="object-fit:cover">
                   <div class="dc-msg-body">
                     <div class="dc-msg-header">
                       <span class="dc-msg-name">Chris</span>
@@ -3790,6 +3815,20 @@
         <div class="footer-contact-item">ABN 19 693 809 013</div>
       </div>
     </div>
+    <div class="footer-credit-block">
+      <a href="mailto:gargdaniel07@gmail.com">
+        <span class="footer-credit-icon">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="5 4 1 8 5 12"/>
+            <polyline points="11 4 15 8 11 12"/>
+            <line x1="9" y1="2" x2="7" y2="14"/>
+          </svg>
+        </span>
+        <span class="footer-credit-label">
+          Site by<strong>Daniel Garg</strong>
+        </span>
+      </a>
+    </div>
   </div>
   <div class="footer-bottom">
     <span>© 2025/26 BEAM Academy. All rights reserved.</span>
@@ -3797,7 +3836,6 @@
       <a href="#" onclick="openLegal('privacy');return false;">Privacy Policy</a>
       <a href="#" onclick="openLegal('terms');return false;">Terms &amp; Conditions</a>
       <a href="#" onclick="openLegal('refund');return false;">Refund Policy</a>
-      <span class="footer-credit"><a href="mailto:gargdaniel07@gmail.com"><svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor" style="flex-shrink:0"><path d="M5 0L6.18 3.82 10 5 6.18 6.18 5 10 3.82 6.18 0 5 3.82 3.82Z"/></svg> Site by Daniel Garg</a></span>
     </div>
   </div>
 </footer>
